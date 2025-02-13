@@ -14,6 +14,7 @@
 		2B4431232D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B4431212D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld */; };
 		2B4431252D5E6EAE0080729F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B4431242D5E6EAE0080729F /* Assets.xcassets */; };
 		2B4431282D5E6EAE0080729F /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2B4431272D5E6EAE0080729F /* Base */; };
+		77869C8566CC105104E56B72 /* libPods-SpaceShipsApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DA7639CAABAF5C5B4BC0B7B /* libPods-SpaceShipsApp.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,9 @@
 		2B4431242D5E6EAE0080729F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2B4431272D5E6EAE0080729F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2B4431292D5E6EAE0080729F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		31A689A4E174EC0561B70D7C /* Pods-SpaceShipsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceShipsApp.debug.xcconfig"; path = "Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp.debug.xcconfig"; sourceTree = "<group>"; };
+		5625B3E85895E693475672E5 /* Pods-SpaceShipsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceShipsApp.release.xcconfig"; path = "Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp.release.xcconfig"; sourceTree = "<group>"; };
+		9DA7639CAABAF5C5B4BC0B7B /* libPods-SpaceShipsApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SpaceShipsApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77869C8566CC105104E56B72 /* libPods-SpaceShipsApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +49,8 @@
 			children = (
 				2B4431172D5E6EAD0080729F /* SpaceShipsApp */,
 				2B4431162D5E6EAD0080729F /* Products */,
+				99864CE52FB5A775B4E18FCB /* Pods */,
+				D99C63E637B6B97D215DD38C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -70,6 +77,23 @@
 			path = SpaceShipsApp;
 			sourceTree = "<group>";
 		};
+		99864CE52FB5A775B4E18FCB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				31A689A4E174EC0561B70D7C /* Pods-SpaceShipsApp.debug.xcconfig */,
+				5625B3E85895E693475672E5 /* Pods-SpaceShipsApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		D99C63E637B6B97D215DD38C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9DA7639CAABAF5C5B4BC0B7B /* libPods-SpaceShipsApp.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -77,9 +101,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2B44312C2D5E6EAE0080729F /* Build configuration list for PBXNativeTarget "SpaceShipsApp" */;
 			buildPhases = (
+				D19310AB82D2A336A50ED976 /* [CP] Check Pods Manifest.lock */,
 				2B4431112D5E6EAD0080729F /* Sources */,
 				2B4431122D5E6EAD0080729F /* Frameworks */,
 				2B4431132D5E6EAD0080729F /* Resources */,
+				D3CE67ABDF5CBC7C243D36E3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -135,6 +161,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D19310AB82D2A336A50ED976 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SpaceShipsApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D3CE67ABDF5CBC7C243D36E3 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2B4431112D5E6EAD0080729F /* Sources */ = {
@@ -207,7 +275,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -270,7 +338,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -291,11 +359,13 @@
 		};
 		2B44312D2D5E6EAE0080729F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 31A689A4E174EC0561B70D7C /* Pods-SpaceShipsApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpaceShipsApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -318,11 +388,13 @@
 		};
 		2B44312E2D5E6EAE0080729F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5625B3E85895E693475672E5 /* Pods-SpaceShipsApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SpaceShipsApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
