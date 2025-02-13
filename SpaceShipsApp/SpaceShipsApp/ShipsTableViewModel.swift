@@ -9,11 +9,15 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+protocol ShipsTableViewModelProtocol {
+    func fetchShips()
+}
+
 final class ShipsTableViewModel {
     private var networkManager: ShipsFetchable
     private var mapper: ShipsMappable
     
-    private var ships = PublishRelay<[Ship]>()
+     var ships = PublishRelay<[Ship]>()
     
     init(networkManager: ShipsFetchable, mapper: ShipsMappable) {
         self.networkManager = networkManager
@@ -21,7 +25,7 @@ final class ShipsTableViewModel {
     }
 }
 
-extension ShipsTableViewModel {
+extension ShipsTableViewModel: ShipsTableViewModelProtocol {
     func fetchShips() {
         networkManager.fetchShipsData { [weak self] result in
             switch result {
