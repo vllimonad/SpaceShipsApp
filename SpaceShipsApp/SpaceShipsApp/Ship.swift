@@ -9,11 +9,11 @@ import Foundation
 
 struct Ship {
     var id: String
-    var image: String
+    var image: String?
     var name: String
     var type: String
-    var year: Int
-    var weight: Int
+    var year: Int?
+    var weight: Int?
     var port: String
     var roles: [String]
 }

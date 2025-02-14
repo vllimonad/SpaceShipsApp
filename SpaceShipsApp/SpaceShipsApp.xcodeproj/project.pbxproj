@@ -9,15 +9,16 @@
 /* Begin PBXBuildFile section */
 		2B4431192D5E6EAD0080729F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4431182D5E6EAD0080729F /* AppDelegate.swift */; };
 		2B44311B2D5E6EAD0080729F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */; };
-		2B44311D2D5E6EAD0080729F /* ShipsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B44311C2D5E6EAD0080729F /* ShipsTableViewController.swift */; };
+		2B44311D2D5E6EAD0080729F /* ShipsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */; };
 		2B4431232D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2B4431212D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld */; };
 		2B4431252D5E6EAE0080729F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2B4431242D5E6EAE0080729F /* Assets.xcassets */; };
 		2B4431282D5E6EAE0080729F /* Base in Resources */ = {isa = PBXBuildFile; fileRef = 2B4431272D5E6EAE0080729F /* Base */; };
-		2BD238EB2D5E85520000C250 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EA2D5E85520000C250 /* NetworkManager.swift */; };
-		2BD238EF2D5E8D680000C250 /* ShipsTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EE2D5E8D680000C250 /* ShipsTableViewModel.swift */; };
+		2BD238EB2D5E85520000C250 /* NetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EA2D5E85520000C250 /* NetworkingManager.swift */; };
+		2BD238EF2D5E8D680000C250 /* ShipsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */; };
 		2BD238F12D5E8FC70000C250 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238F02D5E8FC70000C250 /* Ship.swift */; };
 		2BD238F32D5E90130000C250 /* ShipsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238F22D5E90130000C250 /* ShipsMapper.swift */; };
 		2BD238F52D5E99CC0000C250 /* ShipTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */; };
+		2BD238F72D5EA5A40000C250 /* ShipCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238F62D5EA5A40000C250 /* ShipCellViewModel.swift */; };
 		77869C8566CC105104E56B72 /* libPods-SpaceShipsApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DA7639CAABAF5C5B4BC0B7B /* libPods-SpaceShipsApp.a */; };
 /* End PBXBuildFile section */
 
@@ -25,16 +26,17 @@
 		2B4431152D5E6EAD0080729F /* SpaceShipsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceShipsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B4431182D5E6EAD0080729F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		2B44311C2D5E6EAD0080729F /* ShipsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsTableViewController.swift; sourceTree = "<group>"; };
+		2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsListViewController.swift; sourceTree = "<group>"; };
 		2B4431222D5E6EAD0080729F /* SpaceShipsApp.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpaceShipsApp.xcdatamodel; sourceTree = "<group>"; };
 		2B4431242D5E6EAE0080729F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2B4431272D5E6EAE0080729F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2B4431292D5E6EAE0080729F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2BD238EA2D5E85520000C250 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		2BD238EE2D5E8D680000C250 /* ShipsTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsTableViewModel.swift; sourceTree = "<group>"; };
+		2BD238EA2D5E85520000C250 /* NetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingManager.swift; sourceTree = "<group>"; };
+		2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsListViewModel.swift; sourceTree = "<group>"; };
 		2BD238F02D5E8FC70000C250 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
 		2BD238F22D5E90130000C250 /* ShipsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsMapper.swift; sourceTree = "<group>"; };
 		2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipTableViewCell.swift; sourceTree = "<group>"; };
+		2BD238F62D5EA5A40000C250 /* ShipCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipCellViewModel.swift; sourceTree = "<group>"; };
 		31A689A4E174EC0561B70D7C /* Pods-SpaceShipsApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceShipsApp.debug.xcconfig"; path = "Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5625B3E85895E693475672E5 /* Pods-SpaceShipsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpaceShipsApp.release.xcconfig"; path = "Target Support Files/Pods-SpaceShipsApp/Pods-SpaceShipsApp.release.xcconfig"; sourceTree = "<group>"; };
 		9DA7639CAABAF5C5B4BC0B7B /* libPods-SpaceShipsApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SpaceShipsApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,12 +77,13 @@
 			children = (
 				2B4431182D5E6EAD0080729F /* AppDelegate.swift */,
 				2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */,
-				2B44311C2D5E6EAD0080729F /* ShipsTableViewController.swift */,
+				2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */,
 				2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */,
-				2BD238EE2D5E8D680000C250 /* ShipsTableViewModel.swift */,
+				2BD238F62D5EA5A40000C250 /* ShipCellViewModel.swift */,
+				2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */,
 				2BD238F22D5E90130000C250 /* ShipsMapper.swift */,
 				2BD238F02D5E8FC70000C250 /* Ship.swift */,
-				2BD238EA2D5E85520000C250 /* NetworkManager.swift */,
+				2BD238EA2D5E85520000C250 /* NetworkingManager.swift */,
 				2B4431242D5E6EAE0080729F /* Assets.xcassets */,
 				2B4431262D5E6EAE0080729F /* LaunchScreen.storyboard */,
 				2B4431292D5E6EAE0080729F /* Info.plist */,
@@ -221,13 +224,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2BD238F32D5E90130000C250 /* ShipsMapper.swift in Sources */,
-				2B44311D2D5E6EAD0080729F /* ShipsTableViewController.swift in Sources */,
+				2B44311D2D5E6EAD0080729F /* ShipsListViewController.swift in Sources */,
 				2BD238F12D5E8FC70000C250 /* Ship.swift in Sources */,
 				2BD238F52D5E99CC0000C250 /* ShipTableViewCell.swift in Sources */,
 				2B4431192D5E6EAD0080729F /* AppDelegate.swift in Sources */,
-				2BD238EB2D5E85520000C250 /* NetworkManager.swift in Sources */,
-				2BD238EF2D5E8D680000C250 /* ShipsTableViewModel.swift in Sources */,
+				2BD238EB2D5E85520000C250 /* NetworkingManager.swift in Sources */,
+				2BD238EF2D5E8D680000C250 /* ShipsListViewModel.swift in Sources */,
 				2B4431232D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld in Sources */,
+				2BD238F72D5EA5A40000C250 /* ShipCellViewModel.swift in Sources */,
 				2B44311B2D5E6EAD0080729F /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

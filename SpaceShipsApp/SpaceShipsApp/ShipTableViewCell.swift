@@ -6,21 +6,27 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ShipTableViewCell: UITableViewCell {
     static let identifier = "ShipCell"
+    var viewModel: ShipCellViewModel?
+    var disposeBag = DisposeBag()
     
     private var shipImageView = {
         var imageView = UIImageView()
-        imageView.backgroundColor = .brown
+        imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 20
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
     private var nameLabel = {
         var label = UILabel()
-        label.text = "name"
+        label.numberOfLines = 1
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -28,14 +34,14 @@ class ShipTableViewCell: UITableViewCell {
     
     private var typeLabel = {
         var label = UILabel()
-        label.text = "type"
+        label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private var yearLabel = {
         var label = UILabel()
-        label.text = "2001"
+        label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -72,8 +78,21 @@ class ShipTableViewCell: UITableViewCell {
             shipImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
             
             stackView.leadingAnchor.constraint(equalTo: shipImageView.trailingAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
             stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
             stackView.bottomAnchor.constraint(equalTo: shipImageView.centerYAnchor)
         ])
+    }
+    
+    func setupBindings() {
+        viewModel?.imageData.asObservable().subscribe(onNext: { [weak self] data in
+            guard let viewModel = self?.viewModel else { return }
+            DispatchQueue.main.async {
+                self?.shipImageView.image = UIImage(data: data)
+                self?.nameLabel.text = viewModel.ship.name
+                self?.typeLabel.text = viewModel.ship.type
+                self?.yearLabel.text = String(describing: viewModel.ship.year)
+            }
+        }).disposed(by: disposeBag)
     }
 }

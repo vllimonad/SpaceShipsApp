@@ -9,25 +9,28 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol ShipsTableViewModelProtocol {
+protocol ShipsListViewModelProtocol {
     func fetchShips()
 }
 
-final class ShipsTableViewModel {
-    private var networkManager: ShipsFetchable
+final class ShipsListViewModel {
+    private var networkManager: Fetchable
     private var mapper: ShipsMappable
     
-     var ships = PublishRelay<[Ship]>()
+    private let base = "https://api.spacexdata.com/v3"
+    private let subdirectory = "/ships"
     
-    init(networkManager: ShipsFetchable, mapper: ShipsMappable) {
+    var ships = PublishRelay<[Ship]>()
+    
+    init(networkManager: Fetchable, mapper: ShipsMappable) {
         self.networkManager = networkManager
         self.mapper = mapper
     }
 }
 
-extension ShipsTableViewModel: ShipsTableViewModelProtocol {
+extension ShipsListViewModel: ShipsListViewModelProtocol {
     func fetchShips() {
-        networkManager.fetchShipsData { [weak self] result in
+        networkManager.fetchData(with: base + subdirectory) { [weak self] result in
             switch result {
             case .success(let data):
                 guard let fetchedShips = self?.mapper.map(data) else { return }

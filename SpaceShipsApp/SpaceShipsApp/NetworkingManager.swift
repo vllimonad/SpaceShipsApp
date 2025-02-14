@@ -7,20 +7,13 @@
 
 import Foundation
 
-protocol ShipsFetchable {
-    func fetchShipsData(completion: @escaping (Result<Data,Error>) -> ())
+protocol Fetchable {
+    func fetchData(with urlString: String, completion: @escaping (Result<Data,Error>) -> ())
 }
 
-final class NetworkManager {
-    private let base = "https://api.spacexdata.com/v3"
-    private let subdirectory = "/ships"
-    private var url: URL {
-        URL(string: base + subdirectory)!
-    }
-}
-
-extension NetworkManager: ShipsFetchable {
-    func fetchShipsData(completion: @escaping (Result<Data, Error>) -> ()) {
+final class NetworkingManager: Fetchable {
+    func fetchData(with urlString: String, completion: @escaping (Result<Data, Error>) -> ()) {
+        guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
