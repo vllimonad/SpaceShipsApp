@@ -10,26 +10,26 @@ import UIKit
 import CoreData
 
 protocol CoreDataManagable {
-    func saveContext()
     func fetchShips() -> [CDShip]
-    func insertShip(_ fetchedShip: [String: Any])
-    func fetchShipById(_ id: String) -> CDShip?
+    func insertShip(_ fetchedShip: [String: Any]) -> CDShip?
+    func storesShip(with id: String) -> Bool
+    func updateShip(_ ship: CDShip, with imageData: Data)
 }
 
 final class CoreDataManager {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let shipEntityName = "CDShip"
-}
-
-extension CoreDataManager: CoreDataManagable {
-    func saveContext() {
+    
+    private func saveContext() {
         do {
             try context.save()
         } catch let error {
             print(error.localizedDescription)
         }
     }
-    
+}
+
+extension CoreDataManager: CoreDataManagable {
     func fetchShips() -> [CDShip] {
         var cdShips = [CDShip]()
         let fetchRequest = CDShip.fetchRequest()
@@ -43,8 +43,8 @@ extension CoreDataManager: CoreDataManagable {
         return cdShips
     }
     
-    func insertShip(_ fetchedShip: [String: Any]) {
-        guard let entity = NSEntityDescription.entity(forEntityName: shipEntityName, in: context) else { return }
+    func insertShip(_ fetchedShip: [String: Any]) -> CDShip? {
+        guard let entity = NSEntityDescription.entity(forEntityName: shipEntityName, in: context) else { return nil }
         let ship = CDShip(entity: entity, insertInto: context)
         ship.id = fetchedShip["ship_id"] as? String
         ship.name = fetchedShip["ship_name"] as? String
@@ -56,11 +56,18 @@ extension CoreDataManager: CoreDataManagable {
         ship.imageUrlString = fetchedShip["image"] as? String
         ship.isRemoved = false
         saveContext()
+        return ship
     }
     
-    func fetchShipById(_ id: String) -> CDShip? {
+    func storesShip(with id: String) -> Bool {
         let fetchRequest = CDShip.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %@", id)
-        return try? context.fetch(fetchRequest).first
+        let response = (try? context.fetch(fetchRequest)) ?? []
+        return !response.isEmpty
+    }
+    
+    func updateShip(_ ship: CDShip, with imageData: Data) {
+        ship.imageData = NSData(data: imageData)
+        saveContext()
     }
 }

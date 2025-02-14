@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class ShipsListViewController: UIViewController {
-    var tableView: UITableView?
+    private var tableView: UITableView?
     
     var viewModel: ShipsListViewModel?
     private let disposeBag = DisposeBag()
@@ -31,16 +31,15 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupBindings() {
-        viewModel?.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { row, item, cell in
-            cell.viewModel = ShipCellViewModel(ship: item, networkingManager: NetworkingManager())
+        viewModel?.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
             cell.setupBindings()
-            cell.viewModel?.fetchImage()
+            cell.ship.accept(ship)
         }.disposed(by: disposeBag)
     }
 }
 
 extension ShipsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        200
+        tableView.bounds.height/4
     }
 }

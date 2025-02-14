@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class ShipsListViewModel {
-    private var networkManager: Fetchable
+    private var networkingManager: Fetchable
     private var coreDaraManager: CoreDataManagable
     
     private let base = "https://api.spacexdata.com/v3"
@@ -19,31 +19,45 @@ final class ShipsListViewModel {
     var ships = PublishRelay<[CDShip]>()
     
     init(networkManager: Fetchable, coreDaraManager: CoreDataManagable) {
-        self.networkManager = networkManager
+        self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
     }
     
-    private func saveShips(_ data: Data) {
+    private func saveFetchedShips(_ data: Data) {
         guard let fetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
-        for fetchedShip in fetchedShips {
-            let fetchedShipId = fetchedShip["ship_id"] as? String ?? ""
-            guard let _ = coreDaraManager.fetchShipById(fetchedShipId) else {
-                coreDaraManager.insertShip(fetchedShip)
-                continue
-            }
+        fetchedShips.filter {
+            let fetchedShipId = String(describing: $0["ship_id"])
+            return !coreDaraManager.storesShip(with: fetchedShipId)
+        }.map {
+            let insertedShip = coreDaraManager.insertShip($0)
+            fetchShipImage(insertedShip!)
         }
     }
 }
 
 extension ShipsListViewModel {
     func fetchShips() {
-        networkManager.fetchData(with: base + subdirectory) { [weak self] result in
+        networkingManager.fetchData(with: base + subdirectory) { [weak self] result in
             switch result {
             case .success(let data):
                 DispatchQueue.main.async {
-                    self?.saveShips(data)
+                    self?.saveFetchedShips(data)
                     guard let ships = self?.coreDaraManager.fetchShips() else { return }
                     self?.ships.accept(ships)
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    func fetchShipImage(_ ship: CDShip) {
+        guard let shipImageUrlString = ship.imageUrlString else { return }
+        networkingManager.fetchData(with: shipImageUrlString) { [weak self] result in
+            switch result {
+            case .success(let data):
+                DispatchQueue.main.async {
+                    self?.coreDaraManager.updateShip(ship, with: data)
                 }
             case .failure(let error):
                 print(error)
