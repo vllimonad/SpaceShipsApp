@@ -12,16 +12,16 @@ import RxCocoa
 final class ShipCellViewModel {
     private var networkingManager: Fetchable
     
-    var ship: Ship
+    var ship: CDShip
     var imageData = PublishRelay<Data>()
     
-    init(ship: Ship, networkingManager: NetworkingManager) {
+    init(ship: CDShip, networkingManager: NetworkingManager) {
         self.ship = ship
         self.networkingManager = networkingManager
     }
     
     func fetchImage() {
-        networkingManager.fetchData(with: ship.image ?? "") { [weak self] result in
+        networkingManager.fetchData(with: ship.imageUrlString ?? "") { [weak self] result in
             switch result {
             case .success(let data):
                 self?.imageData.accept(data)
