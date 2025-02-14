@@ -9,10 +9,10 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class ShipTableViewCell: UITableViewCell {
+final class ShipTableViewCell: UITableViewCell {
     static let identifier = "ShipCell"
     var viewModel: ShipCellViewModel?
-    var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     private var shipImageView = {
         var imageView = UIImageView()

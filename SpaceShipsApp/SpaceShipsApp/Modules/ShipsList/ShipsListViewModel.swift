@@ -9,10 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-protocol ShipsListViewModelProtocol {
-    func fetchShips()
-}
-
 final class ShipsListViewModel {
     private var networkManager: Fetchable
     private var mapper: ShipsMappable
@@ -28,7 +24,7 @@ final class ShipsListViewModel {
     }
 }
 
-extension ShipsListViewModel: ShipsListViewModelProtocol {
+extension ShipsListViewModel {
     func fetchShips() {
         networkManager.fetchData(with: base + subdirectory) { [weak self] result in
             switch result {

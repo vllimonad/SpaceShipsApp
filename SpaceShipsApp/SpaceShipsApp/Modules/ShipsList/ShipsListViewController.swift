@@ -12,34 +12,34 @@ import RxCocoa
 final class ShipsListViewController: UIViewController {
     var tableView: UITableView?
     
-    var viewModel = ShipsListViewModel(networkManager: NetworkingManager(), mapper: ShipsMapper())
-    var disposeBag = DisposeBag()
+    var viewModel: ShipsListViewModel?
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupBindings()
-        viewModel.fetchShips()
+        viewModel?.fetchShips()
     }
-}
-
-extension ShipsListViewController: UITableViewDelegate {
-    func setupTableView() {
+    
+    private func setupTableView() {
         tableView = UITableView()
-        tableView!.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
-        tableView!.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView!.frame = view.bounds
+        tableView?.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
+        tableView?.rx.setDelegate(self).disposed(by: disposeBag)
+        tableView?.frame = view.bounds
         view.addSubview(tableView!)
     }
     
-    func setupBindings() {
-        viewModel.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { row, item, cell in
+    private func setupBindings() {
+        viewModel?.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { row, item, cell in
             cell.viewModel = ShipCellViewModel(ship: item, networkingManager: NetworkingManager())
             cell.setupBindings()
             cell.viewModel?.fetchImage()
         }.disposed(by: disposeBag)
     }
-    
+}
+
+extension ShipsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         200
     }

@@ -75,21 +75,69 @@
 		2B4431172D5E6EAD0080729F /* SpaceShipsApp */ = {
 			isa = PBXGroup;
 			children = (
-				2B4431182D5E6EAD0080729F /* AppDelegate.swift */,
-				2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */,
-				2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */,
-				2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */,
-				2BD238F62D5EA5A40000C250 /* ShipCellViewModel.swift */,
-				2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */,
-				2BD238F22D5E90130000C250 /* ShipsMapper.swift */,
-				2BD238F02D5E8FC70000C250 /* Ship.swift */,
-				2BD238EA2D5E85520000C250 /* NetworkingManager.swift */,
+				2BD238FC2D5F76670000C250 /* Application */,
+				2BD238F82D5F75BE0000C250 /* Modules */,
+				2BD238FB2D5F764D0000C250 /* Helpers */,
+				2BD238FD2D5F76AB0000C250 /* Model */,
 				2B4431242D5E6EAE0080729F /* Assets.xcassets */,
 				2B4431262D5E6EAE0080729F /* LaunchScreen.storyboard */,
 				2B4431292D5E6EAE0080729F /* Info.plist */,
 				2B4431212D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld */,
 			);
 			path = SpaceShipsApp;
+			sourceTree = "<group>";
+		};
+		2BD238F82D5F75BE0000C250 /* Modules */ = {
+			isa = PBXGroup;
+			children = (
+				2BD238F92D5F75DE0000C250 /* ShipsList */,
+			);
+			path = Modules;
+			sourceTree = "<group>";
+		};
+		2BD238F92D5F75DE0000C250 /* ShipsList */ = {
+			isa = PBXGroup;
+			children = (
+				2BD238FA2D5F76250000C250 /* ShipCell */,
+				2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */,
+				2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */,
+			);
+			path = ShipsList;
+			sourceTree = "<group>";
+		};
+		2BD238FA2D5F76250000C250 /* ShipCell */ = {
+			isa = PBXGroup;
+			children = (
+				2BD238F62D5EA5A40000C250 /* ShipCellViewModel.swift */,
+				2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */,
+			);
+			path = ShipCell;
+			sourceTree = "<group>";
+		};
+		2BD238FB2D5F764D0000C250 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				2BD238F22D5E90130000C250 /* ShipsMapper.swift */,
+				2BD238EA2D5E85520000C250 /* NetworkingManager.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		2BD238FC2D5F76670000C250 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				2B4431182D5E6EAD0080729F /* AppDelegate.swift */,
+				2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		2BD238FD2D5F76AB0000C250 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2BD238F02D5E8FC70000C250 /* Ship.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		99864CE52FB5A775B4E18FCB /* Pods */ = {
