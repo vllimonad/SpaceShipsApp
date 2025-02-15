@@ -49,10 +49,9 @@ final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
             }
         }).disposed(by: disposeBag)
         
-        viewModel?.detailsValues.bind(to: tableView.rx.items(cellIdentifier: "cell", cellType: UITableViewCell.self)) { [weak self] row, value, cell in
-            cell.textLabel?.text = value
-            print(value)
-            cell.detailTextLabel?.text = value
+        viewModel?.detailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
+            guard let fieldName = self?.viewModel?.detailsNames[row] else { return }
+            cell.setLabelsText(with: fieldName, and: value)
         }.disposed(by: disposeBag)
     }
     
@@ -75,6 +74,6 @@ final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
     
     private func setupTableView() {
         tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(ShipDetailsTableViewCell.self, forCellReuseIdentifier: ShipDetailsTableViewCell.identifier)
     }
 }
