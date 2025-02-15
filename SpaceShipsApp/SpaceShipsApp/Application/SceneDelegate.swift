@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let viewController = ShipsListViewController()
         viewController.viewModel = ShipsListViewModel(networkManager: NetworkingManager(),
                                                       coreDaraManager: CoreDataManager())
-        window?.rootViewController = viewController
+        window?.rootViewController = UINavigationController(rootViewController: viewController)
         window?.makeKeyAndVisible()
     }
 
