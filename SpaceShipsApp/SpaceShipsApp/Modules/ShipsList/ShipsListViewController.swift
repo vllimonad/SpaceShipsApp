@@ -41,6 +41,7 @@ final class ShipsListViewController: UIViewController {
             let shipDetailsViewController = ShipDetailsViewController()
             shipDetailsViewController.viewModel = ShipDetailsViewModel(ship)
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
+            self?.tableView?.deselectRow(at: indexPath, animated: true)
         }).disposed(by: disposeBag)
     }
 }
