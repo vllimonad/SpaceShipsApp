@@ -10,11 +10,15 @@ import RxSwift
 import RxCocoa
 
 final class ShipDetailsViewModel {
-    var imageData = PublishRelay<NSData?>()
-    var detailsValues = PublishRelay<[String]>()
+    var imageData = ReplayRelay<NSData?>.create(bufferSize: 1)
+    var detailsValues = ReplayRelay<[String]>.create(bufferSize: 1)
     let detailsNames = ["Name", "Type", "Year", "Weight(kg)", "Home port", "Roles"]
     
-    func setShip(_ ship: CDShip) {
+    init(_ ship: CDShip) {
+        updateShipData(ship)
+    }
+    
+    private func updateShipData(_ ship: CDShip) {
         let name = ship.name ?? ""
         let type = ship.type ?? ""
         let year = ship.year == nil ? "Unknown" : "\(ship.year!)"

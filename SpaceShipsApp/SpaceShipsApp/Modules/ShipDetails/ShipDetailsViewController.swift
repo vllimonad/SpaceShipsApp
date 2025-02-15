@@ -9,11 +9,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
+final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     var viewModel: ShipDetailsViewModel?
-    private var disposeBag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
-    private var shipImageView = {
+    private let shipImageView = {
         var imageView = UIImageView()
         imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 20
@@ -24,11 +24,23 @@ final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
         return imageView
     }()
     
-    private var tableView = {
+    private let tableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.isScrollEnabled = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
+    }()
+    
+    private let scrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
+    
+    private let contentView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
 
     override func viewDidLoad() {
@@ -37,6 +49,7 @@ final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
         setupLayout()
         setupTableView()
         setupBindings()
+        setupBackButton()
     }
     
     private func setupBindings() {
@@ -56,24 +69,45 @@ final class ShipDetailsViewController: UIViewController, UIScrollViewDelegate {
     }
     
     private func setupLayout() {
-        view.addSubview(shipImageView)
-        view.addSubview(tableView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(shipImageView)
+        contentView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
-            shipImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            shipImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            shipImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.2),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            shipImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            shipImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            shipImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             shipImageView.heightAnchor.constraint(equalTo: shipImageView.widthAnchor),
-
+            
             tableView.topAnchor.constraint(equalTo: shipImageView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
     
     private func setupTableView() {
         tableView.rx.setDelegate(self).disposed(by: disposeBag)
         tableView.register(ShipDetailsTableViewCell.self, forCellReuseIdentifier: ShipDetailsTableViewCell.identifier)
+    }
+    
+    private func setupBackButton() {
+        let action = UIAction { [weak self] _ in
+            self?.dismiss(animated: true)
+        }
+        navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .close, primaryAction: action)
     }
 }

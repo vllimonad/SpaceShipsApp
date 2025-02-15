@@ -39,10 +39,8 @@ final class ShipsListViewController: UIViewController {
         tableView?.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
             guard let ship = self?.viewModel?.ships.value[indexPath.row] else { return }
             let shipDetailsViewController = ShipDetailsViewController()
-            let shipDetailsViewModel = ShipDetailsViewModel()
-            shipDetailsViewController.viewModel = shipDetailsViewModel
-            self?.present(shipDetailsViewController, animated: true)
-            shipDetailsViewModel.setShip(ship)
+            shipDetailsViewController.viewModel = ShipDetailsViewModel(ship)
+            self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
         }).disposed(by: disposeBag)
     }
 }
