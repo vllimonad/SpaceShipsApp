@@ -16,7 +16,7 @@ final class ShipsListViewModel {
     private let base = "https://api.spacexdata.com/v3"
     private let subdirectory = "/ships"
     
-    var ships = PublishRelay<[CDShip]>()
+    var ships = BehaviorRelay(value: [CDShip]())
     
     init(networkManager: Fetchable, coreDaraManager: CoreDataManagable) {
         self.networkingManager = networkManager
@@ -26,9 +26,9 @@ final class ShipsListViewModel {
     private func saveFetchedShips(_ data: Data) {
         guard let fetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
         fetchedShips.filter {
-            let fetchedShipId = String(describing: $0["ship_id"])
+            let fetchedShipId = $0["ship_id"] as! String
             return !coreDaraManager.storesShip(with: fetchedShipId)
-        }.map {
+        }.forEach {
             let insertedShip = coreDaraManager.insertShip($0)
             fetchShipImage(insertedShip!)
         }
@@ -63,5 +63,9 @@ extension ShipsListViewModel {
                 print(error)
             }
         }
+    }
+    
+    func deleteAllShips() {
+        coreDaraManager.deleteAllShips()
     }
 }

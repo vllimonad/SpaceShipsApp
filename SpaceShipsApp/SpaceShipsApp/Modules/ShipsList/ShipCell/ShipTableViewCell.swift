@@ -11,8 +11,6 @@ import RxCocoa
 
 final class ShipTableViewCell: UITableViewCell {
     static let identifier = "ShipCell"
-    var ship = PublishRelay<CDShip>()
-    private let disposeBag = DisposeBag()
     
     private var shipImageView = {
         var imageView = UIImageView()
@@ -85,22 +83,20 @@ final class ShipTableViewCell: UITableViewCell {
         ])
     }
     
-    func setupBindings() {
-        ship.asObservable().subscribe(onNext: { [weak self] ship in
-            let shipName = ship.name ?? "Unknown name"
-            let shipType = ship.type ?? "Unknown type"
-            let shipYear = ship.year == nil ? "Unknown year" : "\(ship.year!)"
-            DispatchQueue.main.async {
-                self?.nameLabel.text = shipName
-                self?.typeLabel.text = shipType
-                self?.yearLabel.text = shipYear
-                if let shipImageNSData = ship.imageData {
-                    let shipImageData = Data(referencing: shipImageNSData)
-                    self?.shipImageView.image = UIImage(data: shipImageData)
-                } else {
-                    self?.shipImageView.image = UIImage(named: "ImageAbsence")
-                }
+    func setShip(_ ship: CDShip) {
+        let shipName = ship.name ?? "Unknown name"
+        let shipType = ship.type ?? "Unknown type"
+        let shipYear = ship.year == nil ? "Unknown year" : "\(ship.year!)"
+        DispatchQueue.main.async { [weak self] in
+            self?.nameLabel.text = shipName
+            self?.typeLabel.text = shipType
+            self?.yearLabel.text = shipYear
+            if let shipImageNSData = ship.imageData {
+                let shipImageData = Data(referencing: shipImageNSData)
+                self?.shipImageView.image = UIImage(data: shipImageData)
+            } else {
+                self?.shipImageView.image = UIImage(named: "ImageAbsence")
             }
-        }).disposed(by: disposeBag)
+        }
     }
 }

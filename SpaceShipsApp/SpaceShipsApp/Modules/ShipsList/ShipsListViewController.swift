@@ -19,6 +19,7 @@ final class ShipsListViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupBindings()
+        //viewModel?.deleteAll()
         viewModel?.fetchShips()
     }
     
@@ -32,8 +33,7 @@ final class ShipsListViewController: UIViewController {
     
     private func setupBindings() {
         viewModel?.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
-            cell.setupBindings()
-            cell.ship.accept(ship)
+            cell.setShip(ship)
         }.disposed(by: disposeBag)
     }
 }
