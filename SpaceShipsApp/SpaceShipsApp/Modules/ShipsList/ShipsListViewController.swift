@@ -35,6 +35,15 @@ final class ShipsListViewController: UIViewController {
         viewModel?.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
             cell.setShip(ship)
         }.disposed(by: disposeBag)
+        
+        tableView?.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
+            guard let ship = self?.viewModel?.ships.value[indexPath.row] else { return }
+            let shipDetailsViewController = ShipDetailsViewController()
+            let shipDetailsViewModel = ShipDetailsViewModel()
+            shipDetailsViewController.viewModel = shipDetailsViewModel
+            self?.present(shipDetailsViewController, animated: true)
+            shipDetailsViewModel.setShip(ship)
+        }).disposed(by: disposeBag)
     }
 }
 
