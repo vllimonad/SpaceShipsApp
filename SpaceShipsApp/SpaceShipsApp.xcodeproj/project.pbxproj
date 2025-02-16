@@ -19,6 +19,7 @@
 		2B962EB22D60D3AE0030CC74 /* ShipDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EB12D60D3AE0030CC74 /* ShipDetailsViewController.swift */; };
 		2B962EB42D60E25C0030CC74 /* ShipDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EB32D60E25C0030CC74 /* ShipDetailsViewModel.swift */; };
 		2B962EB62D60F1C00030CC74 /* ShipDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EB52D60F1C00030CC74 /* ShipDetailsTableViewCell.swift */; };
+		2B962EB92D62299D0030CC74 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EB82D62299D0030CC74 /* LoginViewController.swift */; };
 		2BD238EB2D5E85520000C250 /* NetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EA2D5E85520000C250 /* NetworkingManager.swift */; };
 		2BD238EF2D5E8D680000C250 /* ShipsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */; };
 		2BD238F52D5E99CC0000C250 /* ShipTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */; };
@@ -40,6 +41,7 @@
 		2B962EB12D60D3AE0030CC74 /* ShipDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipDetailsViewController.swift; sourceTree = "<group>"; };
 		2B962EB32D60E25C0030CC74 /* ShipDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipDetailsViewModel.swift; sourceTree = "<group>"; };
 		2B962EB52D60F1C00030CC74 /* ShipDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		2B962EB82D62299D0030CC74 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		2BD238EA2D5E85520000C250 /* NetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingManager.swift; sourceTree = "<group>"; };
 		2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipsListViewModel.swift; sourceTree = "<group>"; };
 		2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipTableViewCell.swift; sourceTree = "<group>"; };
@@ -112,9 +114,18 @@
 			path = ShipDetails;
 			sourceTree = "<group>";
 		};
+		2B962EB72D62297F0030CC74 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				2B962EB82D62299D0030CC74 /* LoginViewController.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		2BD238F82D5F75BE0000C250 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				2B962EB72D62297F0030CC74 /* Login */,
 				2B962EB02D60D3730030CC74 /* ShipDetails */,
 				2BD238F92D5F75DE0000C250 /* ShipsList */,
 			);
@@ -288,6 +299,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B962EB92D62299D0030CC74 /* LoginViewController.swift in Sources */,
 				2B44311D2D5E6EAD0080729F /* ShipsListViewController.swift in Sources */,
 				2BD238F52D5E99CC0000C250 /* ShipTableViewCell.swift in Sources */,
 				2B962EAD2D5F86820030CC74 /* CDShip+CoreDataClass.swift in Sources */,
