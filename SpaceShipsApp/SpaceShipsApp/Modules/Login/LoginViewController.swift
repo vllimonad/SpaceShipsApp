@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
-class LoginViewController: UIViewController {
+final class LoginViewController: UIViewController {
+    private let viewModel: LoginViewModel
+    private let disposeBag = DisposeBag()
     
     private let headerLabel = {
         let label = UILabel()
@@ -38,6 +42,7 @@ class LoginViewController: UIViewController {
         textField.placeholder = "Enter your email"
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.2
+        textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +54,7 @@ class LoginViewController: UIViewController {
         textField.placeholder = "Enter your password"
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.2
+        textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -57,7 +63,6 @@ class LoginViewController: UIViewController {
     
     private let emailValidationErrorLabel = {
         let label = UILabel()
-        //label.text = "Incorrect email"
         label.font = UIFont.systemFont(ofSize: 14)
         label.textColor = .red
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -80,10 +85,20 @@ class LoginViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-
+    
+    init(viewModel: LoginViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLayout()
+        setupBindings()
         view.backgroundColor = .white
     }
     
@@ -132,5 +147,11 @@ class LoginViewController: UIViewController {
             loginAsGuestButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30)
         ])
+    }
+    
+    private func setupBindings() {
+        emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
+        passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
+        viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
     }
 }
