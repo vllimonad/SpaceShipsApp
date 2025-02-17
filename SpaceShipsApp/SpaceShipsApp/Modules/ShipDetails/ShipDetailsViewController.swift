@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
-    var viewModel: ShipDetailsViewModel?
+    private let viewModel: ShipDetailsViewModel
     private let disposeBag = DisposeBag()
     
     private let shipImageView = {
@@ -42,6 +42,15 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    init(viewModel: ShipDetailsViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +62,7 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     }
     
     private func setupBindings() {
-        viewModel?.imageData.subscribe(onNext: { [weak self] shipImageNSData in
+        viewModel.imageData.subscribe(onNext: { [weak self] shipImageNSData in
             if let shipImageNSData = shipImageNSData {
                 let shipImageData = Data(referencing: shipImageNSData)
                 self?.shipImageView.image = UIImage(data: shipImageData)
@@ -62,8 +71,8 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             }
         }).disposed(by: disposeBag)
         
-        viewModel?.detailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
-            guard let fieldName = self?.viewModel?.detailsNames[row] else { return }
+        viewModel.detailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
+            guard let fieldName = self?.viewModel.detailsNames[row] else { return }
             cell.setLabelsText(with: fieldName, and: value)
         }.disposed(by: disposeBag)
     }

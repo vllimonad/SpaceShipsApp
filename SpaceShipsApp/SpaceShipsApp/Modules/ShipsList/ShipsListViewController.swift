@@ -10,10 +10,14 @@ import RxSwift
 import RxCocoa
 
 final class ShipsListViewController: UIViewController {
-    private var tableView: UITableView?
-    
     private let viewModel: ShipsListViewModel
     private let disposeBag = DisposeBag()
+    
+    private let tableView = {
+        let tableView = UITableView()
+        tableView.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
+        return tableView
+    }()
     
     init(viewModel: ShipsListViewModel) {
         self.viewModel = viewModel
@@ -28,30 +32,49 @@ final class ShipsListViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setupBindings()
+        setupNavigationButtons()
         //viewModel?.deleteAll()
         viewModel.fetchShips()
     }
     
     private func setupTableView() {
-        tableView = UITableView()
-        tableView?.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
-        tableView?.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView?.frame = view.bounds
-        view.addSubview(tableView!)
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        tableView.frame = view.bounds
+        view.addSubview(tableView)
     }
     
     private func setupBindings() {
-        viewModel.ships.bind(to: tableView!.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
+        viewModel.ships.bind(to: tableView.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
             cell.setShip(ship)
         }.disposed(by: disposeBag)
         
-        tableView?.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
+        tableView.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
             guard let ship = self?.viewModel.ships.value[indexPath.row] else { return }
-            let shipDetailsViewController = ShipDetailsViewController()
-            shipDetailsViewController.viewModel = ShipDetailsViewModel(ship)
+            let shipDetailsViewController = ShipDetailsViewController(viewModel: ShipDetailsViewModel(ship))
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
-            self?.tableView?.deselectRow(at: indexPath, animated: true)
+            self?.tableView.deselectRow(at: indexPath, animated: true)
         }).disposed(by: disposeBag)
+    }
+    
+    private func setupNavigationButtons() {
+        navigationItem.hidesBackButton = true
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: viewModel.getLogoutButtonTitle(), style: .done, target: self, action: #selector(logoutButtonPressed))
+    }
+    
+    @objc private func logoutButtonPressed() {
+        viewModel.isGuest ? showExitAlert() : navigateToLoginScreen()
+    }
+    
+    private func showExitAlert() {
+        let alertController = UIAlertController(title: nil, message: "Thank you for trialing this app", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
+            self?.navigateToLoginScreen()
+        })
+        present(alertController, animated: true)
+    }
+    
+    private func navigateToLoginScreen() {
+        navigationController?.popViewController(animated: true)
     }
 }
 

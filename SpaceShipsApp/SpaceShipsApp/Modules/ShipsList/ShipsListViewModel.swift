@@ -70,4 +70,8 @@ extension ShipsListViewModel {
     func deleteAllShips() {
         coreDaraManager.deleteAllShips()
     }
+    
+    func getLogoutButtonTitle() -> String {
+        isGuest ? "Exit" : "Log out"
+    }
 }
