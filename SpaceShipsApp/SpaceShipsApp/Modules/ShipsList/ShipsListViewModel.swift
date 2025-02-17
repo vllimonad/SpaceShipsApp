@@ -17,8 +17,10 @@ final class ShipsListViewModel {
     private let subdirectory = "/ships"
     
     var ships = BehaviorRelay(value: [CDShip]())
+    let isGuest: Bool
     
-    init(networkManager: Fetchable, coreDaraManager: CoreDataManagable) {
+    init(isGuest: Bool, networkManager: Fetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
+        self.isGuest = isGuest
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
     }
