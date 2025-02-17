@@ -18,7 +18,7 @@ final class ShipsListViewModel {
     
     var ships = BehaviorRelay(value: [CDShip]())
     
-    init(networkManager: Fetchable, coreDaraManager: CoreDataManagable) {
+    init(networkManager: Fetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
     }

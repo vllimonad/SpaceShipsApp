@@ -10,13 +10,15 @@ import RxSwift
 import RxCocoa
 
 final class LoginViewModel {
-    var email = PublishRelay<String?>()
-    var password = PublishRelay<String?>()
-    var emailValidationError = PublishRelay<String?>()
+    var email = BehaviorRelay<String?>(value: nil)
+    var password = BehaviorRelay<String?>(value: nil)
+    var emailValidationError = BehaviorRelay<String?>(value: nil)
     
+    private let keychainManager: KeychainFetchable
     private let disposeBag = DisposeBag()
     
-    init() {
+    init(keychainManager: KeychainFetchable = KeychainManager()) {
+        self.keychainManager = keychainManager
         setupBindings()
     }
     
@@ -32,5 +34,15 @@ final class LoginViewModel {
         let predicate = NSPredicate(format: "SELF MATCHES[c] %@", regex)
         let validationError = predicate.evaluate(with: email) ? nil : "Invalid email"
         emailValidationError.accept(validationError)
+    }
+    
+    func validateLogin() -> Bool {
+        //guard let _ = emailValidationError.value,
+              guard let email = email.value,
+              let password = password.value,
+              let fetchedPassword = keychainManager.fetchPassword(for: email),
+              password == fetchedPassword
+        else { return false }
+        return true
     }
 }

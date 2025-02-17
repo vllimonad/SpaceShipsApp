@@ -15,11 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        let viewController = ShipsListViewController()
-        viewController.viewModel = ShipsListViewModel(networkManager: NetworkingManager(),
-                                                      coreDaraManager: CoreDataManager())
-        let vc = LoginViewController(viewModel: LoginViewModel())
-        window?.rootViewController = UINavigationController(rootViewController: vc)
+        KeychainManager().savePassword("12345", for: "a@aa.aa")
+        let loginViewController = LoginViewController(viewModel: LoginViewModel())
+        window?.rootViewController = UINavigationController(rootViewController: loginViewController)
         window?.makeKeyAndVisible()
     }
 

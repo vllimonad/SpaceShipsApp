@@ -74,6 +74,7 @@ final class LoginViewController: UIViewController {
         button.setTitle("Login", for: .normal)
         button.backgroundColor = .systemBlue
         button.layer.cornerRadius = 12
+        button.addTarget(self, action: #selector(loginButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -82,8 +83,16 @@ final class LoginViewController: UIViewController {
         let button = UIButton()
         button.setTitle("Continue as guest", for: .normal)
         button.setTitleColor(.systemBlue, for: .normal)
+        button.addTarget(self, action: #selector(loginAsGuestButtonPressed), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
+    }()
+    
+    private let activityIndicator = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
     }()
     
     init(viewModel: LoginViewModel) {
@@ -111,6 +120,7 @@ final class LoginViewController: UIViewController {
         view.addSubview(emailValidationErrorLabel)
         view.addSubview(loginButton)
         view.addSubview(loginAsGuestButton)
+        view.addSubview(activityIndicator)
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -145,7 +155,10 @@ final class LoginViewController: UIViewController {
             loginAsGuestButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
             loginAsGuestButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150),
             loginAsGuestButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30)
+            loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
@@ -153,5 +166,28 @@ final class LoginViewController: UIViewController {
         emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
+    }
+    
+    @objc private func loginButtonPressed() {
+        activityIndicator.startAnimating()
+        let isLoginValid = viewModel.validateLogin()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            guard isLoginValid else { return }
+            self?.navigateToShipsListScreen()
+        }
+    }
+    
+    @objc private func loginAsGuestButtonPressed() {
+        activityIndicator.startAnimating()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            self?.navigateToShipsListScreen()
+        }
+    }
+    
+    private func navigateToShipsListScreen() {
+        let shipListViewController = ShipsListViewController(viewModel: ShipsListViewModel())
+        navigationController?.pushViewController(shipListViewController, animated: true)
     }
 }
