@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class LoginViewController: UIViewController {
-    private let viewModel: LoginViewModel
+    private let viewModel: LoginViewModelProtocol
     private let disposeBag = DisposeBag()
     
     private let headerLabel = {
@@ -95,7 +95,7 @@ final class LoginViewController: UIViewController {
         return indicator
     }()
     
-    init(viewModel: LoginViewModel) {
+    init(viewModel: LoginViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -106,9 +106,9 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setupLayout()
         setupBindings()
-        view.backgroundColor = .white
     }
     
     private func setupLayout() {

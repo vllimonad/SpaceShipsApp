@@ -140,19 +140,11 @@
 		2BD238F92D5F75DE0000C250 /* ShipsList */ = {
 			isa = PBXGroup;
 			children = (
-				2BD238FA2D5F76250000C250 /* ShipCell */,
+				2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */,
 				2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */,
 				2BD238EE2D5E8D680000C250 /* ShipsListViewModel.swift */,
 			);
 			path = ShipsList;
-			sourceTree = "<group>";
-		};
-		2BD238FA2D5F76250000C250 /* ShipCell */ = {
-			isa = PBXGroup;
-			children = (
-				2BD238F42D5E99CC0000C250 /* ShipTableViewCell.swift */,
-			);
-			path = ShipCell;
 			sourceTree = "<group>";
 		};
 		2BD238FB2D5F764D0000C250 /* Helpers */ = {

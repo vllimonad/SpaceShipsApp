@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
-    var viewModel: ShipDetailsViewModel?
+    private let viewModel: ShipDetailsViewModelProtocol
     private let disposeBag = DisposeBag()
     
     private let shipImageView = {
@@ -27,6 +27,7 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     private let tableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.isScrollEnabled = false
+        tableView.register(ShipDetailsTableViewCell.self, forCellReuseIdentifier: ShipDetailsTableViewCell.identifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -42,18 +43,28 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    init(viewModel: ShipDetailsViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = tableView.backgroundColor
         setupLayout()
-        setupTableView()
         setupBindings()
         setupBackButton()
     }
     
     private func setupBindings() {
-        viewModel?.imageData.subscribe(onNext: { [weak self] shipImageNSData in
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+
+        viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageNSData in
             if let shipImageNSData = shipImageNSData {
                 let shipImageData = Data(referencing: shipImageNSData)
                 self?.shipImageView.image = UIImage(data: shipImageData)
@@ -62,8 +73,8 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             }
         }).disposed(by: disposeBag)
         
-        viewModel?.detailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
-            guard let fieldName = self?.viewModel?.detailsNames[row] else { return }
+        viewModel.shipDetailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
+            guard let fieldName = self?.viewModel.shipDetailsNames[row] else { return }
             cell.setLabelsText(with: fieldName, and: value)
         }.disposed(by: disposeBag)
     }
@@ -97,11 +108,6 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
-    }
-    
-    private func setupTableView() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView.register(ShipDetailsTableViewCell.self, forCellReuseIdentifier: ShipDetailsTableViewCell.identifier)
     }
     
     private func setupBackButton() {
