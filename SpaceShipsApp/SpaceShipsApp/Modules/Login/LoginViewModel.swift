@@ -9,13 +9,20 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class LoginViewModel {
+protocol LoginViewModelProtocol {
+    var email: BehaviorRelay<String?> { get }
+    var password: BehaviorRelay<String?> { get }
+    var emailValidationError: BehaviorRelay<String?> { get }
+    func validateLogin(_ isGuest: Bool) -> Bool
+}
+
+final class LoginViewModel: LoginViewModelProtocol {
+    private let keychainManager: KeychainFetchable
+    private let disposeBag = DisposeBag()
+    
     var email = BehaviorRelay<String?>(value: nil)
     var password = BehaviorRelay<String?>(value: nil)
     var emailValidationError = BehaviorRelay<String?>(value: nil)
-    
-    private let keychainManager: KeychainFetchable
-    private let disposeBag = DisposeBag()
     
     init(keychainManager: KeychainFetchable = KeychainManager()) {
         self.keychainManager = keychainManager

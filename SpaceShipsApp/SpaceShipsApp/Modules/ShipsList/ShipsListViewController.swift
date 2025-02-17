@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 final class ShipsListViewController: UIViewController {
-    private let viewModel: ShipsListViewModel
+    private let viewModel: ShipsListViewModelProtocol
     private let disposeBag = DisposeBag()
     
     private let tableView = {
@@ -19,7 +19,7 @@ final class ShipsListViewController: UIViewController {
         return tableView
     }()
     
-    init(viewModel: ShipsListViewModel) {
+    init(viewModel: ShipsListViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -30,20 +30,23 @@ final class ShipsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
         setupBindings()
-        setupNavigationButtons()
-        //viewModel?.deleteAll()
+        setupNavigationBarButtons()
         viewModel.fetchShips()
     }
     
+    override func viewWillLayoutSubviews() {
+        setupTableView()
+    }
+    
     private func setupTableView() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView.frame = view.bounds
         view.addSubview(tableView)
+        tableView.frame = view.bounds
     }
     
     private func setupBindings() {
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        
         viewModel.ships.bind(to: tableView.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
             cell.setShip(ship)
         }.disposed(by: disposeBag)
@@ -56,16 +59,17 @@ final class ShipsListViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
-    private func setupNavigationButtons() {
+    private func setupNavigationBarButtons() {
+        let logoutButtonTitle = viewModel.isGuest ? "Exit" : "Log out"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: logoutButtonTitle, style: .done, target: self, action: #selector(logoutButtonPressed))
         navigationItem.hidesBackButton = true
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: viewModel.getLogoutButtonTitle(), style: .done, target: self, action: #selector(logoutButtonPressed))
     }
     
     @objc private func logoutButtonPressed() {
-        viewModel.isGuest ? showExitAlert() : navigateToLoginScreen()
+        viewModel.isGuest ? showGuestExitAlert() : navigateToLoginScreen()
     }
     
-    private func showExitAlert() {
+    private func showGuestExitAlert() {
         let alertController = UIAlertController(title: nil, message: "Thank you for trialing this app", preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "Ok", style: .default) { [weak self] _ in
             self?.navigateToLoginScreen()
@@ -80,6 +84,8 @@ final class ShipsListViewController: UIViewController {
 
 extension ShipsListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        tableView.bounds.height/4
+        let minimumRowHeight = CGFloat(150.0)
+        let prefferedRowHeight = tableView.frame.height/4
+        return max(minimumRowHeight, prefferedRowHeight)
     }
 }

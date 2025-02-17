@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol Fetchable {
+protocol APIFetchable {
     func fetchData(with urlString: String, completion: @escaping (Result<Data,Error>) -> ())
 }
 
-final class NetworkingManager: Fetchable {
+final class NetworkingManager: APIFetchable {
     func fetchData(with urlString: String, completion: @escaping (Result<Data, Error>) -> ()) {
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)

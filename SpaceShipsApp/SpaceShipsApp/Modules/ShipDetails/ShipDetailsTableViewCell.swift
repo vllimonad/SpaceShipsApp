@@ -10,7 +10,7 @@ import UIKit
 class ShipDetailsTableViewCell: UITableViewCell {
     static let identifier = "ShipDetailCell"
     
-    private var cellNameLabel = {
+    private let cellNameLabel = {
         var label = UILabel()
         label.numberOfLines = 1
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -18,7 +18,7 @@ class ShipDetailsTableViewCell: UITableViewCell {
         return label
     }()
     
-    private var cellValueLabel = {
+    private let cellValueLabel = {
         var label = UILabel()
         label.numberOfLines = 0
         label.font = UIFont.systemFont(ofSize: 16)

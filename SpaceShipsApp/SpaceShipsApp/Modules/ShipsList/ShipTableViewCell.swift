@@ -12,7 +12,7 @@ import RxCocoa
 final class ShipTableViewCell: UITableViewCell {
     static let identifier = "ShipCell"
     
-    private var shipImageView = {
+    private let shipImageView = {
         var imageView = UIImageView()
         imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 20
@@ -23,7 +23,7 @@ final class ShipTableViewCell: UITableViewCell {
         return imageView
     }()
     
-    private var nameLabel = {
+    private let nameLabel = {
         var label = UILabel()
         label.numberOfLines = 1
         label.font = UIFont.boldSystemFont(ofSize: 16)
@@ -31,21 +31,21 @@ final class ShipTableViewCell: UITableViewCell {
         return label
     }()
     
-    private var typeLabel = {
+    private let typeLabel = {
         var label = UILabel()
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private var yearLabel = {
+    private let yearLabel = {
         var label = UILabel()
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private var stackView = {
+    private let stackView = {
         var stack = UIStackView()
         stack.axis = .vertical
         stack.distribution = .fillEqually
@@ -84,13 +84,10 @@ final class ShipTableViewCell: UITableViewCell {
     }
     
     func setShip(_ ship: CDShip) {
-        let shipName = ship.name ?? "Unknown name"
-        let shipType = ship.type ?? "Unknown type"
-        let shipYear = ship.year == nil ? "Unknown year" : "\(ship.year!)"
         DispatchQueue.main.async { [weak self] in
-            self?.nameLabel.text = shipName
-            self?.typeLabel.text = shipType
-            self?.yearLabel.text = shipYear
+            self?.nameLabel.text = ship.name ?? "Unknown name"
+            self?.typeLabel.text = ship.type ?? "Unknown type"
+            self?.yearLabel.text = ship.year == nil ? "Unknown year" : "\(ship.year!)"
             if let shipImageNSData = ship.imageData {
                 let shipImageData = Data(referencing: shipImageNSData)
                 self?.shipImageView.image = UIImage(data: shipImageData)

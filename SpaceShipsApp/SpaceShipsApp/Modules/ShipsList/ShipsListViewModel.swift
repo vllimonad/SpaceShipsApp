@@ -9,9 +9,16 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-final class ShipsListViewModel {
-    private var networkingManager: Fetchable
-    private var coreDaraManager: CoreDataManagable
+protocol ShipsListViewModelProtocol {
+    var ships: BehaviorRelay<[CDShip]> { get }
+    var isGuest: Bool { get }
+    func fetchShips()
+    func fetchShipImage(_ ship: CDShip)
+}
+
+final class ShipsListViewModel: ShipsListViewModelProtocol {
+    private let networkingManager: APIFetchable
+    private let coreDaraManager: CoreDataManagable
     
     private let base = "https://api.spacexdata.com/v3"
     private let subdirectory = "/ships"
@@ -19,7 +26,7 @@ final class ShipsListViewModel {
     var ships = BehaviorRelay(value: [CDShip]())
     let isGuest: Bool
     
-    init(isGuest: Bool, networkManager: Fetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
+    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
         self.isGuest = isGuest
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
@@ -69,9 +76,5 @@ extension ShipsListViewModel {
     
     func deleteAllShips() {
         coreDaraManager.deleteAllShips()
-    }
-    
-    func getLogoutButtonTitle() -> String {
-        isGuest ? "Exit" : "Log out"
     }
 }
