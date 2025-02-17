@@ -24,7 +24,7 @@ final class LoginViewModel {
     
     private func setupBindings() {
         email.asObservable().subscribe(onNext: { [weak self] in
-            guard let input = $0 else { return }
+            guard let input = $0, !input.isEmpty else { return }
             self?.validateEmail(input)
         }).disposed(by: disposeBag)
     }
@@ -36,9 +36,10 @@ final class LoginViewModel {
         emailValidationError.accept(validationError)
     }
     
-    func validateLogin() -> Bool {
-        //guard let _ = emailValidationError.value,
-              guard let email = email.value,
+    func validateLogin(_ isGuest: Bool) -> Bool {
+        guard !isGuest else { return true }
+        guard emailValidationError.value == nil,
+              let email = email.value,
               let password = password.value,
               let fetchedPassword = keychainManager.fetchPassword(for: email),
               password == fetchedPassword

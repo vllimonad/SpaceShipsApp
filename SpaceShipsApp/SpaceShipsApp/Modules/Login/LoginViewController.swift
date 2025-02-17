@@ -169,25 +169,21 @@ final class LoginViewController: UIViewController {
     }
     
     @objc private func loginButtonPressed() {
-        activityIndicator.startAnimating()
-        let isLoginValid = viewModel.validateLogin()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.activityIndicator.stopAnimating()
-            guard isLoginValid else { return }
-            self?.navigateToShipsListScreen()
-        }
+        handleLogin(asGuest: false)
     }
     
     @objc private func loginAsGuestButtonPressed() {
-        activityIndicator.startAnimating()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.activityIndicator.stopAnimating()
-            self?.navigateToShipsListScreen()
-        }
+        handleLogin(asGuest: true)
     }
     
-    private func navigateToShipsListScreen() {
-        let shipListViewController = ShipsListViewController(viewModel: ShipsListViewModel())
-        navigationController?.pushViewController(shipListViewController, animated: true)
+    private func handleLogin(asGuest isGuest: Bool) {
+        activityIndicator.startAnimating()
+        let isLoginValid = viewModel.validateLogin(isGuest)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.activityIndicator.stopAnimating()
+            guard isLoginValid else { return }
+            let shipListViewController = ShipsListViewController(viewModel: ShipsListViewModel(isGuest: isGuest))
+            self?.navigationController?.pushViewController(shipListViewController, animated: true)
+        }
     }
 }
