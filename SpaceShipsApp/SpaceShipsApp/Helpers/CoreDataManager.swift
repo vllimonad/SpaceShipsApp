@@ -14,6 +14,7 @@ protocol CoreDataManagable {
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip?
     func storesShip(with id: String) -> Bool
     func updateShip(_ ship: CDShip, with imageData: Data)
+    func deleteShip(_ ship: CDShip)
     func deleteAllShips()
 }
 
@@ -69,6 +70,11 @@ extension CoreDataManager: CoreDataManagable {
     
     func updateShip(_ ship: CDShip, with imageData: Data) {
         ship.imageData = NSData(data: imageData)
+        saveContext()
+    }
+    
+    func deleteShip(_ ship: CDShip) {
+        ship.isRemoved = true
         saveContext()
     }
     

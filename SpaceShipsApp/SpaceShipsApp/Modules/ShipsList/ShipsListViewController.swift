@@ -33,6 +33,7 @@ final class ShipsListViewController: UIViewController {
         super.viewDidLoad()
         setupBindings()
         setupNavigationBarButtons()
+        //viewModel.deleteAllShips()
         viewModel.fetchShips()
     }
     

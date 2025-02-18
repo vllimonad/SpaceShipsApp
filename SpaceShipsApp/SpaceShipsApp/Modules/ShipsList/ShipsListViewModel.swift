@@ -16,6 +16,7 @@ protocol ShipsListViewModelProtocol {
     func fetchShips()
     func fetchShipImage(_ ship: CDShip)
     func deleteShip(_ indexPath: IndexPath)
+    func deleteAllShips()
 }
 
 final class ShipsListViewModel: ShipsListViewModelProtocol {
@@ -54,7 +55,7 @@ extension ShipsListViewModel {
                 DispatchQueue.main.async {
                     self?.saveFetchedShips(data)
                     guard let ships = self?.coreDaraManager.fetchShips() else { return }
-                    self?.ships.accept([AnimatableSectionModel(model: "", items: ships)])
+                    self?.ships.accept([AnimatableSectionModel(model: "", items: ships.filter { !$0.isRemoved })])
                 }
             case .failure(let error):
                 print(error)
@@ -81,8 +82,9 @@ extension ShipsListViewModel {
     }
     
     func deleteShip(_ indexPath: IndexPath) {
-        var ships = ships.value[indexPath.section]
-        ships.items.remove(at: indexPath.row)
-        self.ships.accept([ships])
+        let ship = ships.value[indexPath.section].items[indexPath.row]
+        coreDaraManager.deleteShip(ship)
+        let ships = coreDaraManager.fetchShips().filter { !$0.isRemoved }
+        self.ships.accept([AnimatableSectionModel(model: "", items: ships)])
     }
 }
