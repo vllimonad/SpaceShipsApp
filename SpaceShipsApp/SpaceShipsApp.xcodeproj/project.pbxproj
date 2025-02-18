@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B307ADE2D64E5ED00BEAF3C /* BannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B307ADD2D64E5ED00BEAF3C /* BannerView.swift */; };
+		2B307AE02D64E70600BEAF3C /* NetworkConnectionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B307ADF2D64E70600BEAF3C /* NetworkConnectionManager.swift */; };
 		2B4431192D5E6EAD0080729F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4431182D5E6EAD0080729F /* AppDelegate.swift */; };
 		2B44311B2D5E6EAD0080729F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */; };
 		2B44311D2D5E6EAD0080729F /* ShipsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B44311C2D5E6EAD0080729F /* ShipsListViewController.swift */; };
@@ -29,6 +31,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2B307ADD2D64E5ED00BEAF3C /* BannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerView.swift; sourceTree = "<group>"; };
+		2B307ADF2D64E70600BEAF3C /* NetworkConnectionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnectionManager.swift; sourceTree = "<group>"; };
 		2B4431152D5E6EAD0080729F /* SpaceShipsApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceShipsApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B4431182D5E6EAD0080729F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2B44311A2D5E6EAD0080729F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 				2B962EB72D62297F0030CC74 /* Login */,
 				2B962EB02D60D3730030CC74 /* ShipDetails */,
 				2BD238F92D5F75DE0000C250 /* ShipsList */,
+				2B307ADD2D64E5ED00BEAF3C /* BannerView.swift */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 				2BD238EA2D5E85520000C250 /* NetworkingManager.swift */,
 				2B5181852D5F7D6F00E43348 /* CoreDataManager.swift */,
 				2B962EBC2D627F060030CC74 /* KeychainManager.swift */,
+				2B307ADF2D64E70600BEAF3C /* NetworkConnectionManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -297,6 +303,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B307AE02D64E70600BEAF3C /* NetworkConnectionManager.swift in Sources */,
 				2B962EB92D62299D0030CC74 /* LoginViewController.swift in Sources */,
 				2B44311D2D5E6EAD0080729F /* ShipsListViewController.swift in Sources */,
 				2BD238F52D5E99CC0000C250 /* ShipTableViewCell.swift in Sources */,
@@ -312,6 +319,7 @@
 				2B4431232D5E6EAD0080729F /* SpaceShipsApp.xcdatamodeld in Sources */,
 				2B44311B2D5E6EAD0080729F /* SceneDelegate.swift in Sources */,
 				2B5181862D5F7D6F00E43348 /* CoreDataManager.swift in Sources */,
+				2B307ADE2D64E5ED00BEAF3C /* BannerView.swift in Sources */,
 				2B962EB22D60D3AE0030CC74 /* ShipDetailsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
