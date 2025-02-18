@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import RxDataSources
 
 
 extension CDShip {
@@ -27,4 +28,12 @@ extension CDShip {
     @NSManaged public var imageUrlString: String?
     @NSManaged public var imageData: NSData?
 
+}
+
+extension CDShip: IdentifiableType {
+    public var identity: String {
+        id ?? ""
+    }
+    
+    public typealias Identity = String
 }
