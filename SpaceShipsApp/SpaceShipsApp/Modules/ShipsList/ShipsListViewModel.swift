@@ -13,6 +13,7 @@ import RxDataSources
 protocol ShipsListViewModelProtocol {
     var ships: BehaviorRelay<[AnimatableSectionModel<String, CDShip>]> { get }
     var isGuest: Bool { get }
+    var isConnectedToInternet: BehaviorRelay<Bool> { get }
     func fetchShips()
     func fetchShipImage(_ ship: CDShip)
     func deleteShip(_ indexPath: IndexPath)
@@ -22,17 +23,25 @@ protocol ShipsListViewModelProtocol {
 final class ShipsListViewModel: ShipsListViewModelProtocol {
     private let networkingManager: APIFetchable
     private let coreDaraManager: CoreDataManagable
+    private let networkConnectionManager: NetworkConnectionManagable
     
     private let base = "https://api.spacexdata.com/v3"
     private let subdirectory = "/ships"
     
     var ships = BehaviorRelay(value: [AnimatableSectionModel<String, CDShip>]())
     let isGuest: Bool
+    var isConnectedToInternet = BehaviorRelay<Bool>(value: true)
     
-    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
+    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable = NetworkConnectionManager()) {
         self.isGuest = isGuest
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
+        self.networkConnectionManager = networkConnectionManager
+        setupBindings()
+    }
+    
+    private func setupBindings() {
+        networkConnectionManager.isConnected.bind(to: isConnectedToInternet).disposed(by: DisposeBag())
     }
     
     private func saveFetchedShips(_ data: Data) {

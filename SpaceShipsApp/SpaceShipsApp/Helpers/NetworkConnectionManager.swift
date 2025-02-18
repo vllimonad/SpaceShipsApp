@@ -20,13 +20,13 @@ final class NetworkConnectionManager: NetworkConnectionManagable {
     
     let isConnected = BehaviorRelay<Bool>(value: true)
     
+    init() {
+        startMonitoring()
+    }
+    
     private func startMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in
-            if path.status == .satisfied {
-                self?.isConnected.accept(true)
-            } else {
-                self?.isConnected.accept(false)
-            }
+            self?.isConnected.accept(path.status == .satisfied)
         }
         monitor.start(queue: monitoringQueue)
     }

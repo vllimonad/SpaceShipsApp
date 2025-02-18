@@ -20,6 +20,17 @@ final class ShipsListViewController: UIViewController {
         return tableView
     }()
     
+    private let bannerLabel = {
+        let banner = UILabel()
+        banner.text = "No internet connection. You’re in Offline mode."
+        banner.textAlignment = .center
+        banner.numberOfLines = 0
+        banner.isHidden = true
+        banner.backgroundColor = .systemGray4
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        return banner
+    }()
+    
     init(viewModel: ShipsListViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -38,15 +49,30 @@ final class ShipsListViewController: UIViewController {
     }
     
     override func viewWillLayoutSubviews() {
-        setupTableView()
+        setupLayout()
     }
     
-    private func setupTableView() {
+    private func setupLayout() {
         view.addSubview(tableView)
         tableView.frame = view.bounds
+        
+        guard let navigationController = navigationController else { return }
+        navigationController.view.addSubview(bannerLabel)
+        NSLayoutConstraint.activate([
+            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
+        ])
     }
     
     private func setupBindings() {
+        viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnected in
+            DispatchQueue.main.async {
+                self?.bannerLabel.isHidden = isConnected
+            }
+        }).disposed(by: disposeBag)
+        
         let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { dataSource, tableView, indexPath, ship in
             let cell = tableView.dequeueReusableCell(withIdentifier: ShipTableViewCell.identifier, for: indexPath) as! ShipTableViewCell
             cell.setShip(ship)
