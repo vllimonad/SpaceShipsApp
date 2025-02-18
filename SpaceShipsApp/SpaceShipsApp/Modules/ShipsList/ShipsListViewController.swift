@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 final class ShipsListViewController: UIViewController {
     private let viewModel: ShipsListViewModelProtocol
@@ -32,6 +33,7 @@ final class ShipsListViewController: UIViewController {
         super.viewDidLoad()
         setupBindings()
         setupNavigationBarButtons()
+        //viewModel.deleteAllShips()
         viewModel.fetchShips()
     }
     
@@ -45,18 +47,27 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupBindings() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        
-        viewModel.ships.bind(to: tableView.rx.items(cellIdentifier: ShipTableViewCell.identifier, cellType: ShipTableViewCell.self)) { _, ship, cell in
+        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { dataSource, tableView, indexPath, ship in
+            let cell = tableView.dequeueReusableCell(withIdentifier: ShipTableViewCell.identifier, for: indexPath) as! ShipTableViewCell
             cell.setShip(ship)
-        }.disposed(by: disposeBag)
+            return cell
+        } canEditRowAtIndexPath: { _, _ in
+            true
+        }
         
-        tableView.rx.itemSelected.subscribe(onNext: { [weak self] indexPath in
-            guard let ship = self?.viewModel.ships.value[indexPath.row] else { return }
+        tableView.rx.itemSelected.subscribe(onNext: { [weak self] in
+            guard let ship = self?.viewModel.ships.value[$0.section].items[$0.row] else { return }
             let shipDetailsViewController = ShipDetailsViewController(viewModel: ShipDetailsViewModel(ship))
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
-            self?.tableView.deselectRow(at: indexPath, animated: true)
+            self?.tableView.deselectRow(at: $0, animated: true)
         }).disposed(by: disposeBag)
+        
+        tableView.rx.itemDeleted.subscribe(onNext: { [weak self] in
+            self?.viewModel.deleteShip($0)
+        }).disposed(by: disposeBag)
+        
+        viewModel.ships.bind(to: tableView.rx.items(dataSource: dataSource)).disposed(by: disposeBag)
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     private func setupNavigationBarButtons() {
