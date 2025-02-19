@@ -44,6 +44,17 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         return view
     }()
     
+    private let bannerLabel = {
+        let banner = UILabel()
+        banner.text = "No internet connection. You’re in Offline mode."
+        banner.textAlignment = .center
+        banner.numberOfLines = 0
+        banner.isHidden = true
+        banner.backgroundColor = .systemGray4
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        return banner
+    }()
+    
     init(viewModel: ShipDetailsViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -62,8 +73,6 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     }
     
     private func setupBindings() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-
         viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageNSData in
             if let shipImageNSData = shipImageNSData {
                 let shipImageData = Data(referencing: shipImageNSData)
@@ -77,9 +86,15 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             guard let fieldName = self?.viewModel.shipDetailsNames[row] else { return }
             cell.setLabelsText(with: fieldName, and: value)
         }.disposed(by: disposeBag)
+        
+        viewModel.isConnectedToInternet.bind(to: bannerLabel.rx.isHidden).disposed(by: disposeBag)
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
     private func setupLayout() {
+        guard let navigationController = navigationController else { return }
+        navigationController.view.addSubview(bannerLabel)
+        
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         contentView.addSubview(shipImageView)
@@ -107,6 +122,11 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     

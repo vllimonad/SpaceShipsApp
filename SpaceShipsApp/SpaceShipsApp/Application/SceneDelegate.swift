@@ -10,14 +10,15 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         //KeychainManager().savePassword("12345", for: "a@aa.aa")
-        let loginViewController = LoginViewController(viewModel: LoginViewModel())
-        window?.rootViewController = UINavigationController(rootViewController: loginViewController)
+        let loginViewModel = LoginViewModel(networkConnectionManager: NetworkConnectionManager())
+        let loginViewController = LoginViewController(viewModel: loginViewModel)
+        let navigationController = UINavigationController(rootViewController: loginViewController)
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 
@@ -51,7 +52,5 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
-
-
 }
 

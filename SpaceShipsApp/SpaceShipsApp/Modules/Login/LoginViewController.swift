@@ -13,6 +13,13 @@ final class LoginViewController: UIViewController {
     private let viewModel: LoginViewModelProtocol
     private let disposeBag = DisposeBag()
     
+    private let contentView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private let headerLabel = {
         let label = UILabel()
         label.text = "Space X ships"
@@ -95,6 +102,17 @@ final class LoginViewController: UIViewController {
         return indicator
     }()
     
+    private let bannerLabel = {
+        let banner = UILabel()
+        banner.text = "No internet connection. You’re in Offline mode."
+        banner.textAlignment = .center
+        banner.numberOfLines = 0
+        banner.isHidden = true
+        banner.backgroundColor = .systemGray4
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        return banner
+    }()
+    
     init(viewModel: LoginViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -112,28 +130,39 @@ final class LoginViewController: UIViewController {
     }
     
     private func setupLayout() {
-        view.addSubview(headerLabel)
-        view.addSubview(emailLabel)
-        view.addSubview(passwordLabel)
-        view.addSubview(emailTextField)
-        view.addSubview(passwordTextField)
-        view.addSubview(emailValidationErrorLabel)
-        view.addSubview(loginButton)
-        view.addSubview(loginAsGuestButton)
-        view.addSubview(activityIndicator)
+        guard let navigationController = navigationController else { return }
+        navigationController.view.addSubview(bannerLabel)
+        
+        view.addSubview(contentView)
+        contentView.addSubview(headerLabel)
+        contentView.addSubview(emailLabel)
+        contentView.addSubview(passwordLabel)
+        contentView.addSubview(emailTextField)
+        contentView.addSubview(passwordTextField)
+        contentView.addSubview(emailValidationErrorLabel)
+        contentView.addSubview(loginButton)
+        contentView.addSubview(loginAsGuestButton)
+        contentView.addSubview(activityIndicator)
+        
+        
         
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             headerLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor),
-            headerLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            headerLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            headerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             
             emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
             emailLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
             
             emailTextField.heightAnchor.constraint(equalToConstant: 40),
-            emailTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
-            emailTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
+            emailTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
             
             emailValidationErrorLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
             emailValidationErrorLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
@@ -148,17 +177,22 @@ final class LoginViewController: UIViewController {
             passwordTextField.trailingAnchor.constraint(equalTo: emailTextField.trailingAnchor),
             
             loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 70),
-            loginButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loginButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             loginButton.widthAnchor.constraint(equalToConstant: 200),
             loginButton.heightAnchor.constraint(equalToConstant: 35),
             
             loginAsGuestButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
-            loginAsGuestButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -150),
-            loginAsGuestButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loginAsGuestButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -150),
+            loginAsGuestButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30),
             
-            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            
+            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -166,6 +200,13 @@ final class LoginViewController: UIViewController {
         emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
+        //viewModel.isConnectedToInternet.bind(to: bannerLabel.rx.isHidden).disposed(by: disposeBag)
+        viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
+            DispatchQueue.main.async {
+                self?.bannerLabel.isHidden = isConnectedToInternet
+                self?.view.isHidden = !isConnectedToInternet
+            }
+        }).disposed(by: disposeBag)
     }
     
     @objc private func loginButtonPressed() {
@@ -181,9 +222,12 @@ final class LoginViewController: UIViewController {
         let isLoginValid = viewModel.validateLogin(isGuest)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.activityIndicator.stopAnimating()
-            guard isLoginValid else { return }
-            let shipListViewController = ShipsListViewController(viewModel: ShipsListViewModel(isGuest: isGuest))
-            self?.navigationController?.pushViewController(shipListViewController, animated: true)
+            guard 
+                isLoginValid,
+                let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest)
+            else { return }
+            let shipsListViewController = ShipsListViewController(viewModel: shipsListViewModel)
+            self?.navigationController?.pushViewController(shipsListViewController, animated: true)
         }
     }
 }

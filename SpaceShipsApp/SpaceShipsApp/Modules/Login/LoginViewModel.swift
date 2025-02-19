@@ -13,23 +13,29 @@ protocol LoginViewModelProtocol {
     var email: BehaviorRelay<String?> { get }
     var password: BehaviorRelay<String?> { get }
     var emailValidationError: BehaviorRelay<String?> { get }
+    var isConnectedToInternet: BehaviorRelay<Bool> { get }
     func validateLogin(_ isGuest: Bool) -> Bool
+    func getShipsListViewModel(_ isGuest: Bool) -> ShipsListViewModel
 }
 
 final class LoginViewModel: LoginViewModelProtocol {
     private let keychainManager: KeychainFetchable
+    private let networkConnectionManager: NetworkConnectionManagable
     private let disposeBag = DisposeBag()
     
     var email = BehaviorRelay<String?>(value: nil)
     var password = BehaviorRelay<String?>(value: nil)
     var emailValidationError = BehaviorRelay<String?>(value: nil)
+    var isConnectedToInternet = BehaviorRelay<Bool>(value: true)
     
-    init(keychainManager: KeychainFetchable = KeychainManager()) {
+    init(keychainManager: KeychainFetchable = KeychainManager(), networkConnectionManager: NetworkConnectionManagable) {
         self.keychainManager = keychainManager
+        self.networkConnectionManager = networkConnectionManager
         setupBindings()
     }
     
     private func setupBindings() {
+        networkConnectionManager.isConnected.bind(to: isConnectedToInternet).disposed(by: disposeBag)
         email.asObservable().subscribe(onNext: { [weak self] in
             guard let input = $0, !input.isEmpty else { return }
             self?.validateEmail(input)
@@ -52,5 +58,9 @@ final class LoginViewModel: LoginViewModelProtocol {
               password == fetchedPassword
         else { return false }
         return true
+    }
+    
+    func getShipsListViewModel(_ isGuest: Bool) -> ShipsListViewModel {
+        ShipsListViewModel(isGuest: isGuest, networkConnectionManager: networkConnectionManager)
     }
 }

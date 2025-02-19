@@ -17,11 +17,14 @@ protocol ShipsListViewModelProtocol {
     func fetchShipImage(_ ship: CDShip)
     func deleteShip(_ indexPath: IndexPath)
     func deleteAllShips()
+    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel
 }
 
 final class ShipsListViewModel: ShipsListViewModelProtocol {
     private let networkingManager: APIFetchable
     private let coreDaraManager: CoreDataManagable
+    private let networkConnectionManager: NetworkConnectionManagable
+    private let disposeBag = DisposeBag()
     
     private let base = "https://api.spacexdata.com/v3"
     private let subdirectory = "/ships"
@@ -29,13 +32,22 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     var ships = BehaviorRelay(value: [AnimatableSectionModel<String, CDShip>]())
     let isGuest: Bool
     
-    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager()) {
+    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable) {
         self.isGuest = isGuest
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
+        self.networkConnectionManager = networkConnectionManager
+        setupBindings()
     }
     
-    private func saveFetchedShips(_ data: Data) {
+    private func setupBindings() {
+        networkConnectionManager.isConnected.subscribe { [weak self] isConnected in
+            guard isConnected else { return }
+            self?.fetchShips()
+        }.disposed(by: disposeBag)
+    }
+    
+    private func saveAPIFetchedShips(_ data: Data) {
         guard let fetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
         fetchedShips.filter {
             let fetchedShipId = $0["ship_id"] as! String
@@ -45,20 +57,26 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
             fetchShipImage(insertedShip!)
         }
     }
+    
+    private func fetchCDShips() {
+        let fetchedCDShips = coreDaraManager.fetchShips()
+        let sections = [AnimatableSectionModel(model: "", items: fetchedCDShips.filter { !$0.isRemoved })]
+        self.ships.accept(sections)
+    }
+    
+    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel {
+        ShipDetailsViewModel(ship, networkConnectionManager: networkConnectionManager)
+    }
 }
 
 extension ShipsListViewModel {
     func fetchShips() {
         networkingManager.fetchData(with: base + subdirectory) { [weak self] result in
-            switch result {
-            case .success(let data):
-                DispatchQueue.main.async {
-                    self?.saveFetchedShips(data)
-                    guard let ships = self?.coreDaraManager.fetchShips() else { return }
-                    self?.ships.accept([AnimatableSectionModel(model: "", items: ships.filter { !$0.isRemoved })])
+            DispatchQueue.main.async {
+                if let data = try? result.get() {
+                    self?.saveAPIFetchedShips(data)
                 }
-            case .failure(let error):
-                print(error)
+                self?.fetchCDShips()
             }
         }
     }
