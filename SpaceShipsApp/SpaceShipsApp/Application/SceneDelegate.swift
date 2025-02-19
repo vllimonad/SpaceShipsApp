@@ -15,8 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         //KeychainManager().savePassword("12345", for: "a@aa.aa")
-        let loginViewController = LoginViewController(viewModel: LoginViewModel())
-        window?.rootViewController = UINavigationController(rootViewController: loginViewController)
+        let loginViewModel = LoginViewModel(networkConnectionManager: NetworkConnectionManager())
+        let loginViewController = LoginViewController(viewModel: loginViewModel)
+        let navigationController = UINavigationController(rootViewController: loginViewController)
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 

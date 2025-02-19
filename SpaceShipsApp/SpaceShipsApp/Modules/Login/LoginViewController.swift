@@ -95,6 +95,17 @@ final class LoginViewController: UIViewController {
         return indicator
     }()
     
+    private let bannerLabel = {
+        let banner = UILabel()
+        banner.text = "No internet connection. You’re in Offline mode."
+        banner.textAlignment = .center
+        banner.numberOfLines = 0
+        banner.isHidden = true
+        banner.backgroundColor = .systemGray4
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        return banner
+    }()
+    
     init(viewModel: LoginViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -112,6 +123,9 @@ final class LoginViewController: UIViewController {
     }
     
     private func setupLayout() {
+        guard let navigationController = navigationController else { return }
+        navigationController.view.addSubview(bannerLabel)
+        
         view.addSubview(headerLabel)
         view.addSubview(emailLabel)
         view.addSubview(passwordLabel)
@@ -158,7 +172,12 @@ final class LoginViewController: UIViewController {
             loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30),
             
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            
+            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -166,6 +185,7 @@ final class LoginViewController: UIViewController {
         emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
+        viewModel.isConnectedToInternet.bind(to: bannerLabel.rx.isHidden).disposed(by: disposeBag)
     }
     
     @objc private func loginButtonPressed() {
@@ -181,9 +201,12 @@ final class LoginViewController: UIViewController {
         let isLoginValid = viewModel.validateLogin(isGuest)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.activityIndicator.stopAnimating()
-            guard isLoginValid else { return }
-            let shipListViewController = ShipsListViewController(viewModel: ShipsListViewModel(isGuest: isGuest))
-            self?.navigationController?.pushViewController(shipListViewController, animated: true)
+            guard 
+                isLoginValid,
+                let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest)
+            else { return }
+            let shipsListViewController = ShipsListViewController(viewModel: shipsListViewModel)
+            self?.navigationController?.pushViewController(shipsListViewController, animated: true)
         }
     }
 }

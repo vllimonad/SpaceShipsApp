@@ -20,17 +20,6 @@ final class ShipsListViewController: UIViewController {
         return tableView
     }()
     
-    private let bannerLabel = {
-        let banner = UILabel()
-        banner.text = "No internet connection. You’re in Offline mode."
-        banner.textAlignment = .center
-        banner.numberOfLines = 0
-        banner.isHidden = true
-        banner.backgroundColor = .systemGray4
-        banner.translatesAutoresizingMaskIntoConstraints = false
-        return banner
-    }()
-    
     init(viewModel: ShipsListViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -55,25 +44,10 @@ final class ShipsListViewController: UIViewController {
     private func setupLayout() {
         view.addSubview(tableView)
         tableView.frame = view.bounds
-        
-        guard let navigationController = navigationController else { return }
-        navigationController.view.addSubview(bannerLabel)
-        NSLayoutConstraint.activate([
-            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
-            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
-            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
-            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
-        ])
     }
     
     private func setupBindings() {
-        viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnected in
-            DispatchQueue.main.async {
-                self?.bannerLabel.isHidden = isConnected
-            }
-        }).disposed(by: disposeBag)
-        
-        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { dataSource, tableView, indexPath, ship in
+        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { _, tableView, indexPath, ship in
             let cell = tableView.dequeueReusableCell(withIdentifier: ShipTableViewCell.identifier, for: indexPath) as! ShipTableViewCell
             cell.setShip(ship)
             return cell
@@ -82,8 +56,11 @@ final class ShipsListViewController: UIViewController {
         }
         
         tableView.rx.itemSelected.subscribe(onNext: { [weak self] in
-            guard let ship = self?.viewModel.ships.value[$0.section].items[$0.row] else { return }
-            let shipDetailsViewController = ShipDetailsViewController(viewModel: ShipDetailsViewModel(ship))
+            guard
+                let ship = self?.viewModel.ships.value[$0.section].items[$0.row],
+                let shipDetailsViewModel = self?.viewModel.getShipDetailsViewModel(ship)
+            else { return }
+            let shipDetailsViewController = ShipDetailsViewController(viewModel: shipDetailsViewModel)
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
             self?.tableView.deselectRow(at: $0, animated: true)
         }).disposed(by: disposeBag)
