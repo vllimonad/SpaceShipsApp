@@ -14,7 +14,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        //KeychainManager().savePassword("12345", for: "a@aa.aa")
+//        KeychainManager().savePassword("12345", for: "c@aa.aa")
+//        DispatchQueue.main.async {
+//            CoreDataManager().insertUser(with: "c@aa.aa")
+//        }
         let loginViewModel = LoginViewModel(networkConnectionManager: NetworkConnectionManager())
         let loginViewController = LoginViewController(viewModel: loginViewModel)
         let navigationController = UINavigationController(rootViewController: loginViewController)

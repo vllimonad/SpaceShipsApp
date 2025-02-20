@@ -11,5 +11,10 @@
         <attribute name="type" optional="YES" attributeType="String"/>
         <attribute name="weight" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="year" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="users" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDUser" inverseName="ships" inverseEntity="CDUser"/>
+    </entity>
+    <entity name="CDUser" representedClassName="CDUser" syncable="YES">
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <relationship name="ships" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CDShip" inverseName="users" inverseEntity="CDShip"/>
     </entity>
 </model>

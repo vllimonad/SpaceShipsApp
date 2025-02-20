@@ -31,12 +31,14 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     
     var ships = BehaviorRelay(value: [AnimatableSectionModel<String, CDShip>]())
     let isGuest: Bool
+    private let userEmail: String?
     
-    init(isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable) {
+    init(userEmail: String?, isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable) {
         self.isGuest = isGuest
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
         self.networkConnectionManager = networkConnectionManager
+        self.userEmail = userEmail
         setupBindings()
     }
     
@@ -59,8 +61,8 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     }
     
     private func fetchCDShips() {
-        let fetchedCDShips = coreDaraManager.fetchShips()
-        let sections = [AnimatableSectionModel(model: "", items: fetchedCDShips.filter { !$0.isRemoved })]
+        let fetchedCDShips = userEmail == nil ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
+        let sections = [AnimatableSectionModel(model: "", items: fetchedCDShips)]
         self.ships.accept(sections)
     }
     
@@ -102,7 +104,7 @@ extension ShipsListViewModel {
     func deleteShip(_ indexPath: IndexPath) {
         let ship = ships.value[indexPath.section].items[indexPath.row]
         coreDaraManager.deleteShip(ship)
-        let ships = coreDaraManager.fetchShips().filter { !$0.isRemoved }
+        let ships = coreDaraManager.fetchShips()
         self.ships.accept([AnimatableSectionModel(model: "", items: ships)])
     }
 }

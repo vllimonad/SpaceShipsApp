@@ -61,6 +61,6 @@ final class LoginViewModel: LoginViewModelProtocol {
     }
     
     func getShipsListViewModel(_ isGuest: Bool) -> ShipsListViewModel {
-        ShipsListViewModel(isGuest: isGuest, networkConnectionManager: networkConnectionManager)
+        ShipsListViewModel(userEmail: email.value, isGuest: isGuest, networkConnectionManager: networkConnectionManager)
     }
 }

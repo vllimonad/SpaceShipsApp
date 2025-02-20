@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 protocol CoreDataManagable {
+    func fetchShipsForUser(with email: String) -> [CDShip]
     func fetchShips() -> [CDShip]
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip?
     func storesShip(with id: String) -> Bool
@@ -21,6 +22,7 @@ protocol CoreDataManagable {
 final class CoreDataManager {
     private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let shipEntityName = "CDShip"
+    private let userEntityName = "CDUser"
     
     private func saveContext() {
         do {
@@ -32,6 +34,15 @@ final class CoreDataManager {
 }
 
 extension CoreDataManager: CoreDataManagable {
+    func insertUser(with email: String?) {
+        guard let entityDescription = NSEntityDescription.entity(forEntityName: userEntityName, in: context) else { return }
+        let user = CDUser(entity: entityDescription, insertInto: context)
+        let ships = fetchShips()
+        user.email = email
+        user.ships = NSSet(array: ships)
+        saveContext()
+    }
+    
     func fetchShips() -> [CDShip] {
         var cdShips = [CDShip]()
         let fetchRequest = CDShip.fetchRequest()
@@ -43,6 +54,17 @@ extension CoreDataManager: CoreDataManagable {
             print(error.localizedDescription)
         }
         return cdShips
+    }
+    
+    func fetchShipsForUser(with email: String) -> [CDShip] {
+        let fetchRequest = CDUser.fetchRequest()
+        let predicate = NSPredicate(format: "email == %@", email)
+        fetchRequest.predicate = predicate
+        guard
+            let cdUser = try? context.fetch(fetchRequest).first,
+            let cdShips = cdUser.ships?.allObjects as? [CDShip]
+        else { return [] }
+        return cdShips.sorted(by: { $0.name! < $1.name! })
     }
     
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip? {
