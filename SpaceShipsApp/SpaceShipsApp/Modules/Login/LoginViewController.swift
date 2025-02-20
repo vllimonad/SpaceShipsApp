@@ -59,6 +59,7 @@ final class LoginViewController: UIViewController {
     private let passwordTextField = {
         let textField = UITextField()
         textField.placeholder = "Enter your password"
+        textField.isSecureTextEntry = true
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.2
         textField.autocapitalizationType = .none
@@ -144,8 +145,6 @@ final class LoginViewController: UIViewController {
         contentView.addSubview(loginAsGuestButton)
         contentView.addSubview(activityIndicator)
         
-        
-        
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -200,6 +199,7 @@ final class LoginViewController: UIViewController {
         emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
+        
         viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
             DispatchQueue.main.async {
                 self?.bannerLabel.isHidden = isConnectedToInternet
@@ -221,10 +221,7 @@ final class LoginViewController: UIViewController {
         let isLoginValid = viewModel.validateLogin(isGuest)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.activityIndicator.stopAnimating()
-            guard 
-                isLoginValid,
-                let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest)
-            else { return }
+            guard isLoginValid, let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest) else { return }
             let shipsListViewController = ShipsListViewController(viewModel: shipsListViewModel)
             self?.navigationController?.pushViewController(shipsListViewController, animated: true)
         }

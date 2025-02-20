@@ -16,7 +16,7 @@ protocol CoreDataManagable {
     func storesShip(with id: String) -> Bool
     func updateShip(_ ship: CDShip, with imageData: Data)
     func deleteShip(_ ship: CDShip, for userEmail: String)
-    func deleteAllShips()
+    //func deleteAllShips()
 }
 
 final class CoreDataManager {
@@ -33,14 +33,22 @@ final class CoreDataManager {
     }
     
     private func fetchUsers() -> [CDUser] {
-        var cdUsers = [CDUser]()
+        var users = [CDUser]()
         let fetchRequest = CDUser.fetchRequest()
         do {
-            cdUsers = try context.fetch(fetchRequest)
+            users = try context.fetch(fetchRequest)
         } catch let error {
             print(error.localizedDescription)
         }
-        return cdUsers
+        return users
+    }
+    
+    private func fetchUser(with email: String) -> CDUser? {
+        let fetchRequest = CDUser.fetchRequest()
+        let predicate = NSPredicate(format: "email == %@", email)
+        fetchRequest.predicate = predicate
+        let user = try? context.fetch(fetchRequest).first
+        return user
     }
     
     func insertUser(with email: String) {
@@ -48,42 +56,30 @@ final class CoreDataManager {
         let user = CDUser(entity: entityDescription, insertInto: context)
         let ships = fetchShips()
         user.email = email
-        user.addToShips(NSSet(array: ships)) 
+        user.addToShips(NSSet(array: ships))
         saveContext()
-    }
-    
-    private func fetchUser(with email: String) -> CDUser? {
-        let fetchRequest = CDUser.fetchRequest()
-        let predicate = NSPredicate(format: "email == %@", email)
-        fetchRequest.predicate = predicate
-        return try? context.fetch(fetchRequest).first
     }
 }
 
 extension CoreDataManager: CoreDataManagable {
     func fetchShips() -> [CDShip] {
-        var cdShips = [CDShip]()
+        var ships = [CDShip]()
         let fetchRequest = CDShip.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
         do {
-            cdShips = try context.fetch(fetchRequest)
+            ships = try context.fetch(fetchRequest)
         } catch let error {
             print(error.localizedDescription)
         }
-        return cdShips
+        return ships
     }
     
     func fetchShipsForUser(with email: String) -> [CDShip] {
-//        let ships = fetchShips()
-//        let filtred = ships.filter({
-//            $0.users?.contains(T##anObject: Any##Any)
-//        })
-        guard
-            let cdUser = fetchUser(with: email),
-            let cdShips = cdUser.ships?.allObjects as? [CDShip]
-        else { return [] }
-        return cdShips.sorted(by: { $0.name! < $1.name! })
+        var ships = fetchShips()
+        guard let user = fetchUser(with: email) else { return [] }
+        ships = ships.filter({ $0.users?.contains(user) ?? false })
+        return ships
     }
     
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip? {
@@ -100,7 +96,7 @@ extension CoreDataManager: CoreDataManagable {
         ship.imageUrlString = fetchedShip["image"] as? String
         
         let users = fetchUsers()
-        ship.users = NSSet(array: users)
+        ship.addToUsers(NSSet(array: users))
         saveContext()
         return ship
     }
@@ -118,20 +114,20 @@ extension CoreDataManager: CoreDataManagable {
     }
     
     func deleteShip(_ ship: CDShip, for userEmail: String) {
-        guard let cdUser = fetchUser(with: userEmail) else { return }
-        cdUser.removeFromShips(ship)
+        guard let user = fetchUser(with: userEmail) else { return }
+        user.removeFromShips(ship)
         saveContext()
     }
     
-    func deleteAllShips() {
-        let ships = fetchShips()
-        for ship in ships {
-            context.delete(ship)
-        }
-        let users = fetchUsers()
-        for user in users {
-            context.delete(user)
-        }
-        saveContext()
-    }
+//    func deleteAllShips() {
+//        let ships = fetchShips()
+//        for ship in ships {
+//            context.delete(ship)
+//        }
+//        let users = fetchUsers()
+//        for user in users {
+//            context.delete(user)
+//        }
+//        saveContext()
+//    }
 }

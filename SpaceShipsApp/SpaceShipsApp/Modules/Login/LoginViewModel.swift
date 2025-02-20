@@ -14,6 +14,7 @@ protocol LoginViewModelProtocol {
     var password: BehaviorRelay<String?> { get }
     var emailValidationError: BehaviorRelay<String?> { get }
     var isConnectedToInternet: BehaviorRelay<Bool> { get }
+    
     func validateLogin(_ isGuest: Bool) -> Bool
     func getShipsListViewModel(_ isGuest: Bool) -> ShipsListViewModel
 }
@@ -36,7 +37,7 @@ final class LoginViewModel: LoginViewModelProtocol {
     
     private func setupBindings() {
         networkConnectionManager.isConnected.bind(to: isConnectedToInternet).disposed(by: disposeBag)
-        email.asObservable().subscribe(onNext: { [weak self] in
+        email.subscribe(onNext: { [weak self] in
             guard let input = $0, !input.isEmpty else { return }
             self?.validateEmail(input)
         }).disposed(by: disposeBag)
@@ -48,7 +49,9 @@ final class LoginViewModel: LoginViewModelProtocol {
         let validationError = predicate.evaluate(with: email) ? nil : "Invalid email"
         emailValidationError.accept(validationError)
     }
+}
     
+extension LoginViewModel {
     func validateLogin(_ isGuest: Bool) -> Bool {
         guard !isGuest else { return true }
         guard emailValidationError.value == nil,

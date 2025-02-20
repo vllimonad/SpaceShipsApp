@@ -12,7 +12,7 @@ import RxCocoa
 protocol ShipDetailsViewModelProtocol {
     var shipImageData: ReplayRelay<NSData?> { get }
     var shipDetailsValues: ReplayRelay<[String]> { get }
-    var shipDetailsNames : [String] { get }
+    var shipDetailsNames: [String] { get }
     var isConnectedToInternet: BehaviorRelay<Bool> { get }
 }
 
