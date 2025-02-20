@@ -16,6 +16,7 @@ protocol CoreDataManagable {
     func storesShip(with id: String) -> Bool
     func updateShip(_ ship: CDShip, with imageData: Data)
     func deleteShip(_ ship: CDShip, for userEmail: String)
+    func restoreShipsForUser(with email: String)
     //func deleteAllShips()
 }
 
@@ -116,6 +117,13 @@ extension CoreDataManager: CoreDataManagable {
     func deleteShip(_ ship: CDShip, for userEmail: String) {
         guard let user = fetchUser(with: userEmail) else { return }
         user.removeFromShips(ship)
+        saveContext()
+    }
+    
+    func restoreShipsForUser(with email: String) {
+        guard let user = fetchUser(with: email) else { return }
+        let ships = fetchShips()
+        user.ships = NSSet(array: ships)
         saveContext()
     }
     

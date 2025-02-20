@@ -71,14 +71,14 @@ final class ShipTableViewCell: UITableViewCell {
         stackView.addArrangedSubview(yearLabel)
         
         NSLayoutConstraint.activate([
-            shipImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
-            shipImageView.heightAnchor.constraint(equalTo: shipImageView.widthAnchor),
-            shipImageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
-            shipImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -16),
+            shipImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
+            shipImageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            shipImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            shipImageView.widthAnchor.constraint(equalTo: shipImageView.heightAnchor),
             
             stackView.leadingAnchor.constraint(equalTo: shipImageView.trailingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -16),
-            stackView.topAnchor.constraint(equalTo: self.topAnchor, constant: 16),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             stackView.bottomAnchor.constraint(equalTo: shipImageView.centerYAnchor)
         ])
     }

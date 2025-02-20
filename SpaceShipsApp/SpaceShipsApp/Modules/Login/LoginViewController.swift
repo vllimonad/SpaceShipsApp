@@ -103,15 +103,10 @@ final class LoginViewController: UIViewController {
         return indicator
     }()
     
-    private let bannerLabel = {
-        let banner = UILabel()
-        banner.text = "No internet connection. You’re in Offline mode."
-        banner.textAlignment = .center
-        banner.numberOfLines = 0
-        banner.isHidden = true
-        banner.backgroundColor = .systemGray4
-        banner.translatesAutoresizingMaskIntoConstraints = false
-        return banner
+    private let bannerView = {
+        let view = BannerVeiw()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     init(viewModel: LoginViewModelProtocol) {
@@ -132,7 +127,7 @@ final class LoginViewController: UIViewController {
     
     private func setupLayout() {
         guard let navigationController = navigationController else { return }
-        navigationController.view.addSubview(bannerLabel)
+        navigationController.view.addSubview(bannerView)
         
         view.addSubview(contentView)
         contentView.addSubview(headerLabel)
@@ -188,10 +183,10 @@ final class LoginViewController: UIViewController {
             activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
-            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
-            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
-            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
+            bannerView.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerView.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerView.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -202,7 +197,7 @@ final class LoginViewController: UIViewController {
         
         viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
             DispatchQueue.main.async {
-                self?.bannerLabel.isHidden = isConnectedToInternet
+                self?.bannerView.isHidden = isConnectedToInternet
                 self?.view.isHidden = !isConnectedToInternet
             }
         }).disposed(by: disposeBag)

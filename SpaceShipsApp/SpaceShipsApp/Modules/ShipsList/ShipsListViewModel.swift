@@ -16,6 +16,7 @@ protocol ShipsListViewModelProtocol {
     
     func fetchShips()
     func deleteShip(_ indexPath: IndexPath)
+    func restoreShips()
     //func deleteAllShips()
     func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel
 }
@@ -61,9 +62,9 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     }
     
     private func fetchCDShips() {
-        let fetchedCDShips = isGuest ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
-        let sections = [AnimatableSectionModel(model: "", items: fetchedCDShips)]
-        self.ships.accept(sections)
+        let fetchedShips = isGuest ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
+        let sections = [AnimatableSectionModel(model: "", items: fetchedShips)]
+        ships.accept(sections)
     }
     
     private func fetchShipImage(_ ship: CDShip) {
@@ -100,6 +101,20 @@ extension ShipsListViewModel {
         
         guard !isGuest, let userEmail = userEmail else { return }
         coreDaraManager.deleteShip(shipToDelete, for: userEmail)
+    }
+    
+    func restoreShips() {
+        let fetchedShips: [CDShip]
+        
+        if isGuest {
+            fetchedShips = coreDaraManager.fetchShips()
+        } else {
+            guard let userEmail = userEmail else { return }
+            coreDaraManager.restoreShipsForUser(with: userEmail)
+            fetchedShips = coreDaraManager.fetchShipsForUser(with: userEmail)
+        }
+        
+        ships.accept([AnimatableSectionModel(model: "", items: fetchedShips)])
     }
     
     func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel {
