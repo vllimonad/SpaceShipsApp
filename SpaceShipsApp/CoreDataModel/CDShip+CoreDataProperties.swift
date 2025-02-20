@@ -24,7 +24,6 @@ extension CDShip {
     @NSManaged public var type: String?
     @NSManaged public var weight: NSNumber?
     @NSManaged public var year: NSNumber?
-    @NSManaged public var isRemoved: Bool
     @NSManaged public var imageUrlString: String?
     @NSManaged public var imageData: NSData?
     @NSManaged public var users: NSSet?

@@ -55,19 +55,15 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
             let fetchedShipId = $0["ship_id"] as! String
             return !coreDaraManager.storesShip(with: fetchedShipId)
         }.forEach {
-            let insertedShip = coreDaraManager.insertShip($0)
-            fetchShipImage(insertedShip!)
+            guard let insertedShip = coreDaraManager.insertShip($0) else { return }
+            fetchShipImage(insertedShip)
         }
     }
     
     private func fetchCDShips() {
-        let fetchedCDShips = userEmail == nil ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
+        let fetchedCDShips = isGuest ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
         let sections = [AnimatableSectionModel(model: "", items: fetchedCDShips)]
         self.ships.accept(sections)
-    }
-    
-    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel {
-        ShipDetailsViewModel(ship, networkConnectionManager: networkConnectionManager)
     }
 }
 
@@ -102,9 +98,15 @@ extension ShipsListViewModel {
     }
     
     func deleteShip(_ indexPath: IndexPath) {
-        let ship = ships.value[indexPath.section].items[indexPath.row]
-        coreDaraManager.deleteShip(ship)
-        let ships = coreDaraManager.fetchShips()
-        self.ships.accept([AnimatableSectionModel(model: "", items: ships)])
+        var shipsSections = ships.value
+        let shipToDelete = shipsSections[indexPath.section].items.remove(at: indexPath.row)
+        self.ships.accept(shipsSections)
+        
+        guard !isGuest, let userEmail = userEmail else { return }
+        coreDaraManager.deleteShip(shipToDelete, for: userEmail)
+    }
+    
+    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel {
+        ShipDetailsViewModel(ship, networkConnectionManager: networkConnectionManager)
     }
 }

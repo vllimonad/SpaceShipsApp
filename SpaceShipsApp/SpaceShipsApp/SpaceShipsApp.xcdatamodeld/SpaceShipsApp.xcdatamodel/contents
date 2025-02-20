@@ -4,7 +4,6 @@
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="imageData" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="imageUrlString" optional="YES" attributeType="String"/>
-        <attribute name="isRemoved" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="port" optional="YES" attributeType="String"/>
         <attribute name="roles" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>

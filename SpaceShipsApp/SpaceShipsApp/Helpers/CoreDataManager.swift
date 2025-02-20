@@ -15,7 +15,7 @@ protocol CoreDataManagable {
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip?
     func storesShip(with id: String) -> Bool
     func updateShip(_ ship: CDShip, with imageData: Data)
-    func deleteShip(_ ship: CDShip)
+    func deleteShip(_ ship: CDShip, for userEmail: String)
     func deleteAllShips()
 }
 
@@ -31,18 +31,36 @@ final class CoreDataManager {
             print(error.localizedDescription)
         }
     }
-}
-
-extension CoreDataManager: CoreDataManagable {
-    func insertUser(with email: String?) {
+    
+    private func fetchUsers() -> [CDUser] {
+        var cdUsers = [CDUser]()
+        let fetchRequest = CDUser.fetchRequest()
+        do {
+            cdUsers = try context.fetch(fetchRequest)
+        } catch let error {
+            print(error.localizedDescription)
+        }
+        return cdUsers
+    }
+    
+    func insertUser(with email: String) {
         guard let entityDescription = NSEntityDescription.entity(forEntityName: userEntityName, in: context) else { return }
         let user = CDUser(entity: entityDescription, insertInto: context)
         let ships = fetchShips()
         user.email = email
-        user.ships = NSSet(array: ships)
+        user.addToShips(NSSet(array: ships)) 
         saveContext()
     }
     
+    private func fetchUser(with email: String) -> CDUser? {
+        let fetchRequest = CDUser.fetchRequest()
+        let predicate = NSPredicate(format: "email == %@", email)
+        fetchRequest.predicate = predicate
+        return try? context.fetch(fetchRequest).first
+    }
+}
+
+extension CoreDataManager: CoreDataManagable {
     func fetchShips() -> [CDShip] {
         var cdShips = [CDShip]()
         let fetchRequest = CDShip.fetchRequest()
@@ -57,11 +75,12 @@ extension CoreDataManager: CoreDataManagable {
     }
     
     func fetchShipsForUser(with email: String) -> [CDShip] {
-        let fetchRequest = CDUser.fetchRequest()
-        let predicate = NSPredicate(format: "email == %@", email)
-        fetchRequest.predicate = predicate
+//        let ships = fetchShips()
+//        let filtred = ships.filter({
+//            $0.users?.contains(T##anObject: Any##Any)
+//        })
         guard
-            let cdUser = try? context.fetch(fetchRequest).first,
+            let cdUser = fetchUser(with: email),
             let cdShips = cdUser.ships?.allObjects as? [CDShip]
         else { return [] }
         return cdShips.sorted(by: { $0.name! < $1.name! })
@@ -70,6 +89,7 @@ extension CoreDataManager: CoreDataManagable {
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip? {
         guard let entity = NSEntityDescription.entity(forEntityName: shipEntityName, in: context) else { return nil }
         let ship = CDShip(entity: entity, insertInto: context)
+        
         ship.id = fetchedShip["ship_id"] as? String
         ship.name = fetchedShip["ship_name"] as? String
         ship.type = fetchedShip["ship_type"] as? String
@@ -78,7 +98,9 @@ extension CoreDataManager: CoreDataManagable {
         ship.port = fetchedShip["home_port"] as? String
         ship.roles = fetchedShip["roles"] as? [String]
         ship.imageUrlString = fetchedShip["image"] as? String
-        ship.isRemoved = false
+        
+        let users = fetchUsers()
+        ship.users = NSSet(array: users)
         saveContext()
         return ship
     }
@@ -95,8 +117,9 @@ extension CoreDataManager: CoreDataManagable {
         saveContext()
     }
     
-    func deleteShip(_ ship: CDShip) {
-        ship.isRemoved = true
+    func deleteShip(_ ship: CDShip, for userEmail: String) {
+        guard let cdUser = fetchUser(with: userEmail) else { return }
+        cdUser.removeFromShips(ship)
         saveContext()
     }
     
@@ -104,6 +127,10 @@ extension CoreDataManager: CoreDataManagable {
         let ships = fetchShips()
         for ship in ships {
             context.delete(ship)
+        }
+        let users = fetchUsers()
+        for user in users {
+            context.delete(user)
         }
         saveContext()
     }
