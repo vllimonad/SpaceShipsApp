@@ -79,7 +79,7 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         
         viewModel.shipDetailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
             guard let fieldName = self?.viewModel.shipDetailsNames[row] else { return }
-            cell.setLabelsText(with: fieldName, and: value)
+            cell.setLabels(with: fieldName, and: value)
         }.disposed(by: disposeBag)
         
         viewModel.isConnectedToInternet.bind(to: bannerView.rx.isHidden).disposed(by: disposeBag)
@@ -98,14 +98,13 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.2),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
             shipImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
@@ -114,9 +113,10 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             shipImageView.heightAnchor.constraint(equalTo: shipImageView.widthAnchor),
             
             tableView.topAnchor.constraint(equalTo: shipImageView.bottomAnchor),
-            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
             tableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            tableView.heightAnchor.constraint(equalToConstant: 320),
             
             bannerView.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
             bannerView.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),

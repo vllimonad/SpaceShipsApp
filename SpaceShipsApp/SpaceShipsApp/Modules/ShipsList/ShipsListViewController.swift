@@ -17,6 +17,7 @@ final class ShipsListViewController: UIViewController {
     private let tableView = {
         let tableView = UITableView()
         tableView.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -31,19 +32,23 @@ final class ShipsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        setupLayout()
         setupBindings()
         setupNavigationBarButtons()
         //viewModel.deleteAllShips()
         viewModel.fetchShips()
     }
     
-    override func viewWillLayoutSubviews() {
-        setupLayout()
-    }
-    
     private func setupLayout() {
         view.addSubview(tableView)
-        tableView.frame = view.bounds
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ])
     }
     
     private func setupBindings() {
