@@ -36,7 +36,6 @@ final class ShipsListViewController: UIViewController {
         setupLayout()
         setupBindings()
         setupNavigationBarButtons()
-        //viewModel.deleteAllShips()
         viewModel.fetchShips()
     }
     

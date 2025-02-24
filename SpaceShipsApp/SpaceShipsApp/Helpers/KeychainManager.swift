@@ -33,6 +33,7 @@ extension KeychainManager: KeychainFetchable {
         ]
         var result: AnyObject?
         SecItemCopyMatching(attributes as CFDictionary, &result)
+        
         guard let data = result as? Data else { return nil }
         return String(data: data, encoding: .utf8)
     }

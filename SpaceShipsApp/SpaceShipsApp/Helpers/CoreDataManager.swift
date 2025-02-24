@@ -17,7 +17,6 @@ protocol CoreDataManagable {
     func updateShip(_ ship: CDShip, with imageData: Data)
     func deleteShip(_ ship: CDShip, for userEmail: String)
     func restoreShipsForUser(with email: String)
-    //func deleteAllShips()
 }
 
 final class CoreDataManager {
@@ -36,11 +35,13 @@ final class CoreDataManager {
     private func fetchUsers() -> [CDUser] {
         var users = [CDUser]()
         let fetchRequest = CDUser.fetchRequest()
+        
         do {
             users = try context.fetch(fetchRequest)
         } catch let error {
             print(error.localizedDescription)
         }
+        
         return users
     }
     
@@ -68,18 +69,20 @@ extension CoreDataManager: CoreDataManagable {
         let fetchRequest = CDShip.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
+        
         do {
             ships = try context.fetch(fetchRequest)
         } catch let error {
             print(error.localizedDescription)
         }
+        
         return ships
     }
     
     func fetchShipsForUser(with email: String) -> [CDShip] {
         var ships = fetchShips()
         guard let user = fetchUser(with: email) else { return [] }
-        ships = ships.filter({ $0.users?.contains(user) ?? false })
+        ships = ships.filter { $0.users?.contains(user) ?? false }
         return ships
     }
     
@@ -126,16 +129,4 @@ extension CoreDataManager: CoreDataManagable {
         user.ships = NSSet(array: ships)
         saveContext()
     }
-    
-//    func deleteAllShips() {
-//        let ships = fetchShips()
-//        for ship in ships {
-//            context.delete(ship)
-//        }
-//        let users = fetchUsers()
-//        for user in users {
-//            context.delete(user)
-//        }
-//        saveContext()
-//    }
 }

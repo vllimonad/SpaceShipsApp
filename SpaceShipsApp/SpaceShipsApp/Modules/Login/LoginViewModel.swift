@@ -37,6 +37,7 @@ final class LoginViewModel: LoginViewModelProtocol {
     
     private func setupBindings() {
         networkConnectionManager.isConnected.bind(to: isConnectedToInternet).disposed(by: disposeBag)
+        
         email.subscribe(onNext: { [weak self] in
             guard let input = $0, !input.isEmpty else { return }
             self?.validateEmail(input)

@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.makeKeyAndVisible()
     }
     
-    func setInitilaCredentials() {
+    func setInitialCredentials() {
         KeychainManager().savePassword("12345", for: "c@aa.aa")
         KeychainManager().savePassword("12345", for: "f@aa.aa")
         CoreDataManager().insertUser(with: "c@aa.aa")

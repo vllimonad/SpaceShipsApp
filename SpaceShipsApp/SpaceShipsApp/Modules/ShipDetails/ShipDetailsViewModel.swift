@@ -44,6 +44,7 @@ final class ShipDetailsViewModel: ShipDetailsViewModelProtocol {
         let port = ship.port ?? valueAbcenceString
         let roles = ship.roles ?? [valueAbcenceString]
         let rolesString = roles.joined(separator: "\n")
+        
         shipImageData.accept(ship.imageData)
         shipDetailsValues.accept([name, type, year, weight, port, rolesString])
     }

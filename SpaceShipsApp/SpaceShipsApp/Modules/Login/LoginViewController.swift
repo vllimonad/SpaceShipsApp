@@ -132,6 +132,7 @@ final class LoginViewController: UIViewController {
         view.addSubview(headerLabel)
         view.addSubview(loginFieldsView)
         view.addSubview(activityIndicator)
+        
         loginFieldsView.addSubview(emailLabel)
         loginFieldsView.addSubview(passwordLabel)
         loginFieldsView.addSubview(emailTextField)
@@ -217,6 +218,7 @@ final class LoginViewController: UIViewController {
     private func handleLogin(asGuest isGuest: Bool) {
         activityIndicator.startAnimating()
         let isLoginValid = viewModel.validateLogin(isGuest)
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.activityIndicator.stopAnimating()
             guard isLoginValid, let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest) else { return }

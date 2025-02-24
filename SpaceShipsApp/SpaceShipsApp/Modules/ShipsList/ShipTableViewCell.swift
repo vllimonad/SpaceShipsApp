@@ -88,6 +88,7 @@ final class ShipTableViewCell: UITableViewCell {
             self?.nameLabel.text = ship.name ?? "Unknown name"
             self?.typeLabel.text = ship.type ?? "Unknown type"
             self?.yearLabel.text = ship.year == nil ? "Unknown year" : "\(ship.year!)"
+            
             if let shipImageNSData = ship.imageData {
                 let shipImageData = Data(referencing: shipImageNSData)
                 self?.shipImageView.image = UIImage(data: shipImageData)

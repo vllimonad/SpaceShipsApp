@@ -15,6 +15,7 @@ final class NetworkingManager: APIFetchable {
     func fetchData(with urlString: String, completion: @escaping (Result<Data, Error>) -> ()) {
         guard let url = URL(string: urlString) else { return }
         let request = URLRequest(url: url)
+        
         URLSession.shared.dataTask(with: request) { data, _, error in
             if let error = error {
                 completion(.failure(error))

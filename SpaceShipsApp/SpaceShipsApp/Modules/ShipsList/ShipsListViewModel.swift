@@ -17,7 +17,6 @@ protocol ShipsListViewModelProtocol {
     func fetchShips()
     func deleteShip(_ indexPath: IndexPath)
     func restoreShips()
-    //func deleteAllShips()
     func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel
 }
 
@@ -52,6 +51,7 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     
     private func saveAPIFetchedShips(_ data: Data) {
         guard let fetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
+        
         fetchedShips.filter {
             guard let fetchedShipId = $0["ship_id"] as? String else { return false }
             return !coreDaraManager.storesShip(with: fetchedShipId)
@@ -69,6 +69,7 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     
     private func fetchShipImage(_ ship: CDShip) {
         guard let shipImageUrlString = ship.imageUrlString else { return }
+        
         networkingManager.fetchData(with: shipImageUrlString) { [weak self] result in
             guard let data = try? result.get() else { return }
             DispatchQueue.main.async {
@@ -89,10 +90,6 @@ extension ShipsListViewModel {
             }
         }
     }
-    
-//    func deleteAllShips() {
-//        coreDaraManager.deleteAllShips()
-//    }
     
     func deleteShip(_ indexPath: IndexPath) {
         var shipsSections = ships.value
