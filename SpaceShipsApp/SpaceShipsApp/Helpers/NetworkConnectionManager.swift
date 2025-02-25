@@ -29,6 +29,7 @@ final class NetworkConnectionManager: NetworkConnectionManagable {
             let isConnected = path.status == .satisfied
             self?.isConnected.accept(isConnected)
         }
+        
         monitor.start(queue: monitoringQueue)
     }
     

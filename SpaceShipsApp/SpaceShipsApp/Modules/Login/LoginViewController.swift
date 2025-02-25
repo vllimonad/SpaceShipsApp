@@ -13,13 +13,6 @@ final class LoginViewController: UIViewController {
     private let viewModel: LoginViewModelProtocol
     private let disposeBag = DisposeBag()
     
-    private let contentView = {
-        let view = UIView()
-        view.backgroundColor = .white
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     private let headerLabel = {
         let label = UILabel()
         label.text = "Space X ships"
@@ -28,6 +21,13 @@ final class LoginViewController: UIViewController {
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
+    }()
+    
+    private let loginFieldsView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     private let emailLabel = {
@@ -48,7 +48,7 @@ final class LoginViewController: UIViewController {
         let textField = UITextField()
         textField.placeholder = "Enter your email"
         textField.layer.cornerRadius = 6
-        textField.layer.borderWidth = 0.2
+        textField.layer.borderWidth = 0.3
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -59,8 +59,9 @@ final class LoginViewController: UIViewController {
     private let passwordTextField = {
         let textField = UITextField()
         textField.placeholder = "Enter your password"
+        textField.isSecureTextEntry = true
         textField.layer.cornerRadius = 6
-        textField.layer.borderWidth = 0.2
+        textField.layer.borderWidth = 0.3
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -102,15 +103,10 @@ final class LoginViewController: UIViewController {
         return indicator
     }()
     
-    private let bannerLabel = {
-        let banner = UILabel()
-        banner.text = "No internet connection. You’re in Offline mode."
-        banner.textAlignment = .center
-        banner.numberOfLines = 0
-        banner.isHidden = true
-        banner.backgroundColor = .systemGray4
-        banner.translatesAutoresizingMaskIntoConstraints = false
-        return banner
+    private let bannerView = {
+        let view = BannerVeiw()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     init(viewModel: LoginViewModelProtocol) {
@@ -131,38 +127,40 @@ final class LoginViewController: UIViewController {
     
     private func setupLayout() {
         guard let navigationController = navigationController else { return }
-        navigationController.view.addSubview(bannerLabel)
+        navigationController.view.addSubview(bannerView)
         
-        view.addSubview(contentView)
-        contentView.addSubview(headerLabel)
-        contentView.addSubview(emailLabel)
-        contentView.addSubview(passwordLabel)
-        contentView.addSubview(emailTextField)
-        contentView.addSubview(passwordTextField)
-        contentView.addSubview(emailValidationErrorLabel)
-        contentView.addSubview(loginButton)
-        contentView.addSubview(loginAsGuestButton)
-        contentView.addSubview(activityIndicator)
+        view.addSubview(headerLabel)
+        view.addSubview(loginFieldsView)
+        view.addSubview(activityIndicator)
         
-        
+        loginFieldsView.addSubview(emailLabel)
+        loginFieldsView.addSubview(passwordLabel)
+        loginFieldsView.addSubview(emailTextField)
+        loginFieldsView.addSubview(passwordTextField)
+        loginFieldsView.addSubview(emailValidationErrorLabel)
+        loginFieldsView.addSubview(loginButton)
+        loginFieldsView.addSubview(loginAsGuestButton)
         
         NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            
-            headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            headerLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor),
-            headerLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            headerLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            headerLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            headerLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 40),
+            headerLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 400),
+
+            loginFieldsView.topAnchor.constraint(equalTo: headerLabel.bottomAnchor),
+            loginFieldsView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            loginFieldsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            loginFieldsView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            loginFieldsView.heightAnchor.constraint(greaterThanOrEqualToConstant: 250),
+            loginFieldsView.heightAnchor.constraint(lessThanOrEqualToConstant: 500),
             
             emailLabel.bottomAnchor.constraint(equalTo: emailTextField.topAnchor, constant: -5),
             emailLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
             
+            emailTextField.leadingAnchor.constraint(equalTo: loginFieldsView.leadingAnchor, constant: 30),
+            emailTextField.trailingAnchor.constraint(equalTo: loginFieldsView.trailingAnchor, constant: -30),
             emailTextField.heightAnchor.constraint(equalToConstant: 40),
-            emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
-            emailTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
             
             emailValidationErrorLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
             emailValidationErrorLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
@@ -172,27 +170,27 @@ final class LoginViewController: UIViewController {
             passwordLabel.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: 5),
             
             passwordTextField.topAnchor.constraint(equalTo: emailValidationErrorLabel.bottomAnchor, constant: 35),
-            passwordTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
             passwordTextField.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor),
             passwordTextField.trailingAnchor.constraint(equalTo: emailTextField.trailingAnchor),
+            passwordTextField.heightAnchor.constraint(equalTo: emailTextField.heightAnchor),
+            passwordTextField.centerYAnchor.constraint(equalTo: loginFieldsView.centerYAnchor),
             
-            loginButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 70),
-            loginButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            loginButton.topAnchor.constraint(lessThanOrEqualTo: passwordTextField.bottomAnchor, constant: 50),
+            loginButton.centerXAnchor.constraint(equalTo: passwordTextField.centerXAnchor),
             loginButton.widthAnchor.constraint(equalToConstant: 200),
             loginButton.heightAnchor.constraint(equalToConstant: 35),
             
-            loginAsGuestButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 20),
-            loginAsGuestButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -150),
-            loginAsGuestButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            loginAsGuestButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 15),
+            loginAsGuestButton.centerXAnchor.constraint(equalTo: passwordTextField.centerXAnchor),
             loginAsGuestButton.heightAnchor.constraint(equalToConstant: 30),
             
-            activityIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            bannerLabel.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
-            bannerLabel.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
-            bannerLabel.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
-            bannerLabel.heightAnchor.constraint(equalToConstant: 50)
+            bannerView.topAnchor.constraint(equalTo: navigationController.navigationBar.bottomAnchor),
+            bannerView.leadingAnchor.constraint(equalTo: navigationController.view.leadingAnchor),
+            bannerView.trailingAnchor.constraint(equalTo: navigationController.view.trailingAnchor),
+            bannerView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -200,10 +198,10 @@ final class LoginViewController: UIViewController {
         emailTextField.rx.text.bind(to: viewModel.email).disposed(by: disposeBag)
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
-        //viewModel.isConnectedToInternet.bind(to: bannerLabel.rx.isHidden).disposed(by: disposeBag)
+        
         viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
             DispatchQueue.main.async {
-                self?.bannerLabel.isHidden = isConnectedToInternet
+                self?.bannerView.isHidden = isConnectedToInternet
                 self?.view.isHidden = !isConnectedToInternet
             }
         }).disposed(by: disposeBag)
@@ -220,12 +218,10 @@ final class LoginViewController: UIViewController {
     private func handleLogin(asGuest isGuest: Bool) {
         activityIndicator.startAnimating()
         let isLoginValid = viewModel.validateLogin(isGuest)
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.activityIndicator.stopAnimating()
-            guard 
-                isLoginValid,
-                let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest)
-            else { return }
+            guard isLoginValid, let shipsListViewModel = self?.viewModel.getShipsListViewModel(isGuest) else { return }
             let shipsListViewController = ShipsListViewController(viewModel: shipsListViewModel)
             self?.navigationController?.pushViewController(shipsListViewController, animated: true)
         }
