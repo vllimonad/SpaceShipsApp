@@ -1,0 +1,6 @@
+module Pods_SpaceShipsApp {
+  umbrella header "Pods-SpaceShipsApp-umbrella.h"
+
+  export *
+  module * { export * }
+}
