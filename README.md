@@ -54,6 +54,13 @@ If no internet connection is detected, the banner with appropriate message will 
 
 Information about all ships and user's ships is stored locally on the user device using Core Data. Login credentials are also stored locally using Keychain.  
 
+## Project setup
+### Setting initial credentials
+
+<img width="1224" alt="Screenshot 2025-02-26 at 17 14 05" src="https://github.com/user-attachments/assets/627f5cc5-132b-452a-a17f-a3acffef8eaa" />
+
+Setting users initial credentials can be done by calling function setInitialCredentials() inside SceneDelegate class.
+
 
 ## Technologies & Implementation
 
