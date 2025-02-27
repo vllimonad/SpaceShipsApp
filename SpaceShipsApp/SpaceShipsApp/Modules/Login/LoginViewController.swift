@@ -132,17 +132,9 @@ final class LoginViewController: UIViewController {
         guard let navigationController = navigationController else { return }
         navigationController.view.addSubview(bannerView)
         
-        view.addSubview(headerLabel)
-        view.addSubview(loginFieldsView)
-        view.addSubview(activityIndicator)
+        view.addSubviews([headerLabel, loginFieldsView, activityIndicator])
         
-        loginFieldsView.addSubview(emailLabel)
-        loginFieldsView.addSubview(passwordLabel)
-        loginFieldsView.addSubview(emailTextField)
-        loginFieldsView.addSubview(passwordTextField)
-        loginFieldsView.addSubview(emailValidationErrorLabel)
-        loginFieldsView.addSubview(loginButton)
-        loginFieldsView.addSubview(loginAsGuestButton)
+        loginFieldsView.addSubviews([emailLabel, passwordLabel, emailTextField, passwordTextField, emailValidationErrorLabel, loginButton, loginAsGuestButton])
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -168,6 +160,7 @@ final class LoginViewController: UIViewController {
             emailValidationErrorLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
             emailValidationErrorLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
             emailValidationErrorLabel.trailingAnchor.constraint(equalTo: emailTextField.trailingAnchor),
+            emailValidationErrorLabel.heightAnchor.constraint(equalToConstant: 10),
 
             passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
             passwordLabel.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: 5),

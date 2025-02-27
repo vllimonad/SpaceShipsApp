@@ -92,8 +92,7 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(shipImageView)
-        contentView.addSubview(tableView)
+        contentView.addSubviews([shipImageView, tableView])
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),

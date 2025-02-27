@@ -64,8 +64,7 @@ final class ShipTableViewCell: UITableViewCell {
     }
     
     private func setupLayout() {
-        addSubview(shipImageView)
-        addSubview(stackView)
+        addSubviews([shipImageView, stackView])
         
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(typeLabel)

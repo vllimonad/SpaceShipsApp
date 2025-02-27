@@ -36,8 +36,7 @@ class ShipDetailsTableViewCell: UITableViewCell {
     }
     
     private func setupLayout() {
-        addSubview(cellNameLabel)
-        addSubview(cellValueLabel)
+        addSubviews([cellNameLabel, cellValueLabel])
         
         NSLayoutConstraint.activate([
             cellNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 12),

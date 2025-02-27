@@ -61,3 +61,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension UIView {
+    func addSubviews(_ subviews: [UIView]) {
+        subviews.forEach { [weak self] in
+            self?.addSubview($0)
+        }
+    }
+}
