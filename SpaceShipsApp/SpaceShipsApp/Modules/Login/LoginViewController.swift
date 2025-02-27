@@ -19,13 +19,14 @@ final class LoginViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 30)
         label.numberOfLines = 0
         label.textAlignment = .center
+        label.backgroundColor = .systemBackground
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let loginFieldsView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -49,6 +50,7 @@ final class LoginViewController: UIViewController {
         textField.placeholder = "Enter your email"
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.3
+        textField.layer.borderColor = UIColor.systemGray.cgColor
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -62,6 +64,7 @@ final class LoginViewController: UIViewController {
         textField.isSecureTextEntry = true
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.3
+        textField.layer.borderColor = UIColor.systemGray.cgColor
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -120,7 +123,7 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupLayout()
         setupBindings()
     }

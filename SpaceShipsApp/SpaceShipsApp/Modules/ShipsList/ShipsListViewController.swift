@@ -17,6 +17,7 @@ final class ShipsListViewController: UIViewController {
     private let tableView = {
         let tableView = UITableView()
         tableView.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
+        tableView.separatorColor = .systemGray
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -32,7 +33,7 @@ final class ShipsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupLayout()
         setupBindings()
         setupNavigationBarButtons()

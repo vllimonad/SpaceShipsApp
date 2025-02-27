@@ -17,6 +17,7 @@ final class ShipTableViewCell: UITableViewCell {
         imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 0.3
+        imageView.layer.borderColor = UIColor.systemGray.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
