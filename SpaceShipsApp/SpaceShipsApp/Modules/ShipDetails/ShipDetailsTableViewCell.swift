@@ -51,8 +51,8 @@ class ShipDetailsTableViewCell: UITableViewCell {
         ])
     }
     
-    func setLabels(with cellName: String, and cellValue: String) {
-        cellNameLabel.text = cellName
-        cellValueLabel.text = cellValue
+    func setLabels(with details: ShipDetailRow) {
+        cellNameLabel.text = details.name
+        cellValueLabel.text = details.value
     }
 }

@@ -76,9 +76,8 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
             }
         }).disposed(by: disposeBag)
         
-        viewModel.shipDetailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
-            guard let fieldName = self?.viewModel.shipDetailsNames[row] else { return }
-            cell.setLabels(with: fieldName, and: value)
+        viewModel.shipDetailsRows.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { _, value, cell in
+            cell.setLabels(with: value)
         }.disposed(by: disposeBag)
         
         viewModel.isConnectedToInternet.bind(to: bannerView.rx.isHidden).disposed(by: disposeBag)
