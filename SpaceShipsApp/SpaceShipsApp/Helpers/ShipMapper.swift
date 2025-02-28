@@ -11,7 +11,7 @@ protocol ShipMappable {
     func map(_ cdShip: CDShip) -> Ship
 }
 
-final class ShipMapper: ShipMappable {
+struct ShipMapper: ShipMappable {
     func map(_ cdShip: CDShip) -> Ship {
         let id = cdShip.id ?? ""
         let name = cdShip.name ?? ""

@@ -19,8 +19,8 @@ protocol CoreDataManagable {
     func restoreShipsForUser(with email: String)
 }
 
-final class CoreDataManager {
-    private lazy var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+struct CoreDataManager {
+    private var context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let shipEntityName = "CDShip"
     private let userEntityName = "CDUser"
     
@@ -40,7 +40,7 @@ final class CoreDataManager {
         return ship
     }
     
-    private func fetchUsers() -> [CDUser] {
+     func fetchUsers() -> [CDUser] {
         var users = [CDUser]()
         let fetchRequest = CDUser.fetchRequest()
         
@@ -61,7 +61,15 @@ final class CoreDataManager {
         return user
     }
     
+    func storesUser(with userEmail: String) -> Bool {
+        let fetchRequest = CDUser.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "email == %@", userEmail)
+        let response = (try? context.fetch(fetchRequest)) ?? []
+        return !response.isEmpty
+    }
+    
     func insertUser(with email: String) {
+        guard !storesUser(with: email) else { return }
         guard let entityDescription = NSEntityDescription.entity(forEntityName: userEntityName, in: context) else { return }
         let user = CDUser(entity: entityDescription, insertInto: context)
         let ships = fetchShips()

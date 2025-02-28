@@ -195,11 +195,9 @@ final class LoginViewController: UIViewController {
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
         
-        viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
-            DispatchQueue.main.async {
-                self?.bannerView.isHidden = isConnectedToInternet
-                self?.view.isHidden = !isConnectedToInternet
-            }
+        viewModel.isConnectedToInternet.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] isConnectedToInternet in
+            self?.bannerView.isHidden = isConnectedToInternet
+            self?.view.isHidden = !isConnectedToInternet
         }).disposed(by: disposeBag)
     }
     
