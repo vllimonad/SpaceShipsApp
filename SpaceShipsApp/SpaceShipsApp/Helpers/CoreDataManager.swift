@@ -13,9 +13,9 @@ protocol CoreDataManagable {
     func fetchShipsForUser(with email: String) -> [CDShip]
     func fetchShips() -> [CDShip]
     func insertShip(_ fetchedShip: [String: Any]) -> CDShip?
-    func storesShip(with id: String) -> Bool
+    func storesShip(with shipID: String) -> Bool
     func updateShip(_ ship: CDShip, with imageData: Data)
-    func deleteShip(_ ship: CDShip, for userEmail: String)
+    func deleteShip(with shipID: String, for userEmail: String)
     func restoreShipsForUser(with email: String)
 }
 
@@ -30,6 +30,14 @@ final class CoreDataManager {
         } catch let error {
             print(error.localizedDescription)
         }
+    }
+    
+    private func fetchShip(with id: String) -> CDShip? {
+        let fetchRequest = CDShip.fetchRequest()
+        let predicate = NSPredicate(format: "id == %@", id)
+        fetchRequest.predicate = predicate
+        let ship = try? context.fetch(fetchRequest).first
+        return ship
     }
     
     private func fetchUsers() -> [CDUser] {
@@ -105,9 +113,9 @@ extension CoreDataManager: CoreDataManagable {
         return ship
     }
     
-    func storesShip(with id: String) -> Bool {
+    func storesShip(with shipID: String) -> Bool {
         let fetchRequest = CDShip.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        fetchRequest.predicate = NSPredicate(format: "id == %@", shipID)
         let response = (try? context.fetch(fetchRequest)) ?? []
         return !response.isEmpty
     }
@@ -117,8 +125,12 @@ extension CoreDataManager: CoreDataManagable {
         saveContext()
     }
     
-    func deleteShip(_ ship: CDShip, for userEmail: String) {
-        guard let user = fetchUser(with: userEmail) else { return }
+    func deleteShip(with shipID: String, for userEmail: String) {
+        guard 
+            let user = fetchUser(with: userEmail),
+            let ship = fetchShip(with: shipID)
+        else { return }
+        
         user.removeFromShips(ship)
         saveContext()
     }

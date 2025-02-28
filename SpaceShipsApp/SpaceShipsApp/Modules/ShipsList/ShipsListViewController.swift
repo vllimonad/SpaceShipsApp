@@ -37,7 +37,7 @@ final class ShipsListViewController: UIViewController {
         setupLayout()
         setupBindings()
         setupNavigationBarButtons()
-        viewModel.fetchShips()
+        viewModel.fetchShipsFromAPI()
     }
     
     private func setupLayout() {
@@ -52,7 +52,7 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupBindings() {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { _, tableView, indexPath, ship in
+        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, Ship>> { _, tableView, indexPath, ship in
             let cell = tableView.dequeueReusableCell(withIdentifier: ShipTableViewCell.identifier, for: indexPath) as! ShipTableViewCell
             cell.setShip(ship)
             return cell
@@ -63,7 +63,7 @@ final class ShipsListViewController: UIViewController {
         tableView.rx.itemSelected.subscribe(onNext: { [weak self] in
             guard
                 let ship = self?.viewModel.ships.value[$0.section].items[$0.row],
-                let shipDetailsViewModel = self?.viewModel.getShipDetailsViewModel(ship)
+                let shipDetailsViewModel = self?.viewModel.getShipDetailsViewModel(for: ship)
             else { return }
             let shipDetailsViewController = ShipDetailsViewController(viewModel: shipDetailsViewModel)
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)

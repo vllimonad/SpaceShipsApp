@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 
 protocol ShipDetailsViewModelProtocol {
-    var shipImageData: BehaviorRelay<NSData?> { get }
+    var shipImageData: BehaviorRelay<Data?> { get }
     var shipDetailsValues: BehaviorRelay<[String]> { get }
     var shipDetailsNames: [String] { get }
     var isConnectedToInternet: BehaviorRelay<Bool> { get }
@@ -20,12 +20,12 @@ final class ShipDetailsViewModel: ShipDetailsViewModelProtocol {
     private let networkConnectionManager: NetworkConnectionManagable
     private let disposeBag = DisposeBag()
     
-    var shipImageData = BehaviorRelay<NSData?>(value: nil)
+    var shipImageData = BehaviorRelay<Data?>(value: nil)
     var shipDetailsValues = BehaviorRelay<[String]>(value: [])
     let shipDetailsNames = ["Name", "Type", "Year", "Weight(kg)", "Home port", "Roles"]
     var isConnectedToInternet = BehaviorRelay<Bool>(value: true)
 
-    init(_ ship: CDShip, networkConnectionManager: NetworkConnectionManagable) {
+    init(_ ship: Ship, networkConnectionManager: NetworkConnectionManagable) {
         self.networkConnectionManager = networkConnectionManager
         setupBindings()
         setDetailsValues(ship)
@@ -35,9 +35,8 @@ final class ShipDetailsViewModel: ShipDetailsViewModelProtocol {
         networkConnectionManager.isConnected.bind(to: isConnectedToInternet).disposed(by: disposeBag)
     }
     
-    private func setDetailsValues(_ ship: CDShip) {
+    private func setDetailsValues(_ ship: Ship) {
         let valueAbcenceString = "Unknown"
-        let name = ship.name ?? valueAbcenceString
         let type = ship.type ?? valueAbcenceString
         let year = ship.year == nil ? valueAbcenceString : "\(ship.year!)"
         let weight = ship.weight == nil ? valueAbcenceString : "\(ship.weight!)"
@@ -46,6 +45,6 @@ final class ShipDetailsViewModel: ShipDetailsViewModelProtocol {
         let rolesString = roles.joined(separator: "\n")
         
         shipImageData.accept(ship.imageData)
-        shipDetailsValues.accept([name, type, year, weight, port, rolesString])
+        shipDetailsValues.accept([ship.name, type, year, weight, port, rolesString])
     }
 }

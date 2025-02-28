@@ -68,9 +68,8 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     }
     
     private func setupBindings() {
-        viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageNSData in
-            if let shipImageNSData = shipImageNSData {
-                let shipImageData = Data(referencing: shipImageNSData)
+        viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageData in
+            if let shipImageData = shipImageData {
                 self?.shipImageView.image = UIImage(data: shipImageData)
             } else {
                 self?.shipImageView.image = UIImage(named: "ImageAbsence")

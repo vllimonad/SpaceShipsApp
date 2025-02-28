@@ -11,32 +11,34 @@ import RxCocoa
 import RxDataSources
 
 protocol ShipsListViewModelProtocol {
-    var ships: BehaviorRelay<[AnimatableSectionModel<String, CDShip>]> { get }
+    var ships: BehaviorRelay<[AnimatableSectionModel<String, Ship>]> { get }
     var isGuest: Bool { get }
     
-    func fetchShips()
+    func fetchShipsFromAPI()
     func deleteShip(_ indexPath: IndexPath)
     func restoreShips()
-    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel
+    func getShipDetailsViewModel(for ship: Ship) -> ShipDetailsViewModel
 }
 
 final class ShipsListViewModel: ShipsListViewModelProtocol {
     private let networkingManager: APIFetchable
     private let coreDaraManager: CoreDataManagable
     private let networkConnectionManager: NetworkConnectionManagable
+    private let shipMapper: ShipMappable
     private let disposeBag = DisposeBag()
     
     private let base = "https://api.spacexdata.com/v3"
     private let subdirectory = "/ships"
     
-    var ships = BehaviorRelay<[AnimatableSectionModel<String, CDShip>]>(value: [])
+    var ships = BehaviorRelay<[AnimatableSectionModel<String, Ship>]>(value: [])
     private let userEmail: String?
     let isGuest: Bool
     
-    init(userEmail: String?, isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable) {
+    init(userEmail: String?, isGuest: Bool, networkManager: APIFetchable = NetworkingManager(), coreDaraManager: CoreDataManagable = CoreDataManager(), networkConnectionManager: NetworkConnectionManagable, shipMapper: ShipMappable = ShipMapper()) {
         self.networkingManager = networkManager
         self.coreDaraManager = coreDaraManager
         self.networkConnectionManager = networkConnectionManager
+        self.shipMapper = shipMapper
         self.isGuest = isGuest
         self.userEmail = userEmail
         setupBindings()
@@ -45,14 +47,14 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
     private func setupBindings() {
         networkConnectionManager.isConnected.subscribe { [weak self] isConnected in
             guard isConnected else { return }
-            self?.fetchShips()
+            self?.fetchShipsFromAPI()
         }.disposed(by: disposeBag)
     }
     
     private func saveAPIFetchedShips(_ data: Data) {
-        guard let fetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
+        guard let apiFetchedShips = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return }
         
-        fetchedShips.filter {
+        apiFetchedShips.filter {
             guard let fetchedShipId = $0["ship_id"] as? String else { return false }
             return !coreDaraManager.storesShip(with: fetchedShipId)
         }.forEach {
@@ -61,8 +63,9 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
         }
     }
     
-    private func fetchCDShips() {
-        let fetchedShips = isGuest ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
+    private func fetchShipsFromCD() {
+        let fetchedCDShips = isGuest ? coreDaraManager.fetchShips() : coreDaraManager.fetchShipsForUser(with: userEmail!)
+        let fetchedShips = fetchedCDShips.map { shipMapper.map($0) }
         let sections = [AnimatableSectionModel(model: "", items: fetchedShips)]
         ships.accept(sections)
     }
@@ -80,13 +83,13 @@ final class ShipsListViewModel: ShipsListViewModelProtocol {
 }
 
 extension ShipsListViewModel {
-    func fetchShips() {
+    func fetchShipsFromAPI() {
         networkingManager.fetchData(with: base + subdirectory) { [weak self] result in
             DispatchQueue.main.async {
                 if let data = try? result.get() {
                     self?.saveAPIFetchedShips(data)
                 }
-                self?.fetchCDShips()
+                self?.fetchShipsFromCD()
             }
         }
     }
@@ -94,27 +97,28 @@ extension ShipsListViewModel {
     func deleteShip(_ indexPath: IndexPath) {
         var shipsSections = ships.value
         let shipToDelete = shipsSections[indexPath.section].items.remove(at: indexPath.row)
-        self.ships.accept(shipsSections)
+        ships.accept(shipsSections)
         
         guard !isGuest, let userEmail = userEmail else { return }
-        coreDaraManager.deleteShip(shipToDelete, for: userEmail)
+        coreDaraManager.deleteShip(with: shipToDelete.id, for: userEmail)
     }
     
     func restoreShips() {
-        let fetchedShips: [CDShip]
+        let fetchedCDShips: [CDShip]
         
         if isGuest {
-            fetchedShips = coreDaraManager.fetchShips()
+            fetchedCDShips = coreDaraManager.fetchShips()
         } else {
             guard let userEmail = userEmail else { return }
             coreDaraManager.restoreShipsForUser(with: userEmail)
-            fetchedShips = coreDaraManager.fetchShipsForUser(with: userEmail)
+            fetchedCDShips = coreDaraManager.fetchShipsForUser(with: userEmail)
         }
         
+        let fetchedShips = fetchedCDShips.map { shipMapper.map($0) }
         ships.accept([AnimatableSectionModel(model: "", items: fetchedShips)])
     }
     
-    func getShipDetailsViewModel(_ ship: CDShip) -> ShipDetailsViewModel {
+    func getShipDetailsViewModel(for ship: Ship) -> ShipDetailsViewModel {
         ShipDetailsViewModel(ship, networkConnectionManager: networkConnectionManager)
     }
 }
