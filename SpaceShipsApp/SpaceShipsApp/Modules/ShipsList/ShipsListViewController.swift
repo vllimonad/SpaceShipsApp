@@ -79,14 +79,14 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupNavigationBarButtons() {
-        let logoutButtonTitle = viewModel.isGuest ? "Exit" : "Log out"
+        let logoutButtonTitle = viewModel.isGuest() ? "Exit" : "Log out"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: logoutButtonTitle, style: .done, target: self, action: #selector(logoutButtonPressed))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Restore ships", style: .plain, target: self, action: #selector(restoreButtonPressed))
         navigationItem.hidesBackButton = true
     }
     
     @objc private func logoutButtonPressed() {
-        viewModel.isGuest ? showGuestExitAlert() : navigateToLoginScreen()
+        viewModel.isGuest() ? showGuestExitAlert() : navigateToLoginScreen()
     }
     
     @objc private func restoreButtonPressed() {

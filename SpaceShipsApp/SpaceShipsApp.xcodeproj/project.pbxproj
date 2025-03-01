@@ -21,6 +21,7 @@
 		2B5D7EE92D7115C30055DE17 /* Ship.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5D7EE82D7115C30055DE17 /* Ship.swift */; };
 		2B5D7EEB2D711D0E0055DE17 /* ShipMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5D7EEA2D711D0E0055DE17 /* ShipMapper.swift */; };
 		2B5D7EEE2D71F38B0055DE17 /* ShipDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5D7EED2D71F38B0055DE17 /* ShipDetailRow.swift */; };
+		2B5D7EF02D732C7D0055DE17 /* UserStatusManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B5D7EEF2D732C7D0055DE17 /* UserStatusManager.swift */; };
 		2B962EAD2D5F86820030CC74 /* CDShip+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EAB2D5F86820030CC74 /* CDShip+CoreDataClass.swift */; };
 		2B962EAE2D5F86820030CC74 /* CDShip+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EAC2D5F86820030CC74 /* CDShip+CoreDataProperties.swift */; };
 		2B962EB22D60D3AE0030CC74 /* ShipDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B962EB12D60D3AE0030CC74 /* ShipDetailsViewController.swift */; };
@@ -52,6 +53,7 @@
 		2B5D7EE82D7115C30055DE17 /* Ship.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ship.swift; sourceTree = "<group>"; };
 		2B5D7EEA2D711D0E0055DE17 /* ShipMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipMapper.swift; sourceTree = "<group>"; };
 		2B5D7EED2D71F38B0055DE17 /* ShipDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipDetailRow.swift; sourceTree = "<group>"; };
+		2B5D7EEF2D732C7D0055DE17 /* UserStatusManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatusManager.swift; sourceTree = "<group>"; };
 		2B962EAB2D5F86820030CC74 /* CDShip+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDShip+CoreDataClass.swift"; sourceTree = "<group>"; };
 		2B962EAC2D5F86820030CC74 /* CDShip+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CDShip+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		2B962EB12D60D3AE0030CC74 /* ShipDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipDetailsViewController.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 				2B962EBC2D627F060030CC74 /* KeychainManager.swift */,
 				2B307ADF2D64E70600BEAF3C /* NetworkConnectionManager.swift */,
 				2B5D7EEA2D711D0E0055DE17 /* ShipMapper.swift */,
+				2B5D7EEF2D732C7D0055DE17 /* UserStatusManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B5D7EF02D732C7D0055DE17 /* UserStatusManager.swift in Sources */,
 				2B307AE02D64E70600BEAF3C /* NetworkConnectionManager.swift in Sources */,
 				2B962EB92D62299D0030CC74 /* LoginViewController.swift in Sources */,
 				2B5D7EEB2D711D0E0055DE17 /* ShipMapper.swift in Sources */,
