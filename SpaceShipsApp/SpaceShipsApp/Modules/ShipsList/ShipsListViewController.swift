@@ -17,6 +17,7 @@ final class ShipsListViewController: UIViewController {
     private let tableView = {
         let tableView = UITableView()
         tableView.register(ShipTableViewCell.self, forCellReuseIdentifier: ShipTableViewCell.identifier)
+        tableView.separatorColor = .systemGray
         tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
@@ -32,11 +33,11 @@ final class ShipsListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupLayout()
         setupBindings()
         setupNavigationBarButtons()
-        viewModel.fetchShips()
+        viewModel.fetchShipsFromAPI()
     }
     
     private func setupLayout() {
@@ -51,7 +52,7 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupBindings() {
-        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, CDShip>> { _, tableView, indexPath, ship in
+        let dataSource = RxTableViewSectionedAnimatedDataSource<AnimatableSectionModel<String, Ship>> { _, tableView, indexPath, ship in
             let cell = tableView.dequeueReusableCell(withIdentifier: ShipTableViewCell.identifier, for: indexPath) as! ShipTableViewCell
             cell.setShip(ship)
             return cell
@@ -62,7 +63,7 @@ final class ShipsListViewController: UIViewController {
         tableView.rx.itemSelected.subscribe(onNext: { [weak self] in
             guard
                 let ship = self?.viewModel.ships.value[$0.section].items[$0.row],
-                let shipDetailsViewModel = self?.viewModel.getShipDetailsViewModel(ship)
+                let shipDetailsViewModel = self?.viewModel.getShipDetailsViewModel(for: ship)
             else { return }
             let shipDetailsViewController = ShipDetailsViewController(viewModel: shipDetailsViewModel)
             self?.present(UINavigationController(rootViewController: shipDetailsViewController), animated: true)
@@ -78,14 +79,14 @@ final class ShipsListViewController: UIViewController {
     }
     
     private func setupNavigationBarButtons() {
-        let logoutButtonTitle = viewModel.isGuest ? "Exit" : "Log out"
+        let logoutButtonTitle = viewModel.isGuest() ? "Exit" : "Log out"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: logoutButtonTitle, style: .done, target: self, action: #selector(logoutButtonPressed))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Restore ships", style: .plain, target: self, action: #selector(restoreButtonPressed))
         navigationItem.hidesBackButton = true
     }
     
     @objc private func logoutButtonPressed() {
-        viewModel.isGuest ? showGuestExitAlert() : navigateToLoginScreen()
+        viewModel.isGuest() ? showGuestExitAlert() : navigateToLoginScreen()
     }
     
     @objc private func restoreButtonPressed() {

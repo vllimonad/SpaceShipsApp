@@ -65,6 +65,7 @@ extension LoginViewModel {
     }
     
     func getShipsListViewModel(_ isGuest: Bool) -> ShipsListViewModel {
-        ShipsListViewModel(userEmail: email.value, isGuest: isGuest, networkConnectionManager: networkConnectionManager)
+        let userStatusManager = UserStatusManager(isGuest: isGuest, userEmail: email.value)
+        return ShipsListViewModel(networkConnectionManager: networkConnectionManager, userStatusManager: userStatusManager)
     }
 }

@@ -17,6 +17,7 @@ final class ShipTableViewCell: UITableViewCell {
         imageView.backgroundColor = .black
         imageView.layer.cornerRadius = 20
         imageView.layer.borderWidth = 0.3
+        imageView.layer.borderColor = UIColor.systemGray.cgColor
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,8 +64,7 @@ final class ShipTableViewCell: UITableViewCell {
     }
     
     private func setupLayout() {
-        addSubview(shipImageView)
-        addSubview(stackView)
+        addSubviews([shipImageView, stackView])
         
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(typeLabel)
@@ -83,14 +83,13 @@ final class ShipTableViewCell: UITableViewCell {
         ])
     }
     
-    func setShip(_ ship: CDShip) {
+    func setShip(_ ship: Ship) {
         DispatchQueue.main.async { [weak self] in
-            self?.nameLabel.text = ship.name ?? "Unknown name"
+            self?.nameLabel.text = ship.name
             self?.typeLabel.text = ship.type ?? "Unknown type"
             self?.yearLabel.text = ship.year == nil ? "Unknown year" : "\(ship.year!)"
             
-            if let shipImageNSData = ship.imageData {
-                let shipImageData = Data(referencing: shipImageNSData)
+            if let shipImageData = ship.imageData {
                 self?.shipImageView.image = UIImage(data: shipImageData)
             } else {
                 self?.shipImageView.image = UIImage(named: "ImageAbsence")

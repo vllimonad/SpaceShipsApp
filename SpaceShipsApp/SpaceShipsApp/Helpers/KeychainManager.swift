@@ -12,7 +12,7 @@ protocol KeychainFetchable {
     func fetchPassword(for email: String) -> String?
 }
 
-final class KeychainManager {
+struct KeychainManager {
     func savePassword(_ password: String, for email: String) {
         guard let passwordData = password.data(using: .utf8) else { return }
         let attributes: [CFString: Any] = [

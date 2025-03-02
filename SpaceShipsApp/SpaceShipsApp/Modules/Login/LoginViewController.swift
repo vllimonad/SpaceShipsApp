@@ -19,13 +19,14 @@ final class LoginViewController: UIViewController {
         label.font = UIFont.boldSystemFont(ofSize: 30)
         label.numberOfLines = 0
         label.textAlignment = .center
+        label.backgroundColor = .systemBackground
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let loginFieldsView = {
         let view = UIView()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -49,6 +50,7 @@ final class LoginViewController: UIViewController {
         textField.placeholder = "Enter your email"
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.3
+        textField.layer.borderColor = UIColor.systemGray.cgColor
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -62,6 +64,7 @@ final class LoginViewController: UIViewController {
         textField.isSecureTextEntry = true
         textField.layer.cornerRadius = 6
         textField.layer.borderWidth = 0.3
+        textField.layer.borderColor = UIColor.systemGray.cgColor
         textField.autocapitalizationType = .none
         textField.leftViewMode = .always
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
@@ -120,7 +123,7 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         setupLayout()
         setupBindings()
     }
@@ -129,17 +132,9 @@ final class LoginViewController: UIViewController {
         guard let navigationController = navigationController else { return }
         navigationController.view.addSubview(bannerView)
         
-        view.addSubview(headerLabel)
-        view.addSubview(loginFieldsView)
-        view.addSubview(activityIndicator)
+        view.addSubviews([headerLabel, loginFieldsView, activityIndicator])
         
-        loginFieldsView.addSubview(emailLabel)
-        loginFieldsView.addSubview(passwordLabel)
-        loginFieldsView.addSubview(emailTextField)
-        loginFieldsView.addSubview(passwordTextField)
-        loginFieldsView.addSubview(emailValidationErrorLabel)
-        loginFieldsView.addSubview(loginButton)
-        loginFieldsView.addSubview(loginAsGuestButton)
+        loginFieldsView.addSubviews([emailLabel, passwordLabel, emailTextField, passwordTextField, emailValidationErrorLabel, loginButton, loginAsGuestButton])
         
         NSLayoutConstraint.activate([
             headerLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -165,6 +160,7 @@ final class LoginViewController: UIViewController {
             emailValidationErrorLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 5),
             emailValidationErrorLabel.leadingAnchor.constraint(equalTo: emailTextField.leadingAnchor, constant: 5),
             emailValidationErrorLabel.trailingAnchor.constraint(equalTo: emailTextField.trailingAnchor),
+            emailValidationErrorLabel.heightAnchor.constraint(equalToConstant: 10),
 
             passwordLabel.bottomAnchor.constraint(equalTo: passwordTextField.topAnchor, constant: -5),
             passwordLabel.leadingAnchor.constraint(equalTo: passwordTextField.leadingAnchor, constant: 5),
@@ -199,11 +195,9 @@ final class LoginViewController: UIViewController {
         passwordTextField.rx.text.bind(to: viewModel.password).disposed(by: disposeBag)
         viewModel.emailValidationError.bind(to: emailValidationErrorLabel.rx.text).disposed(by: disposeBag)
         
-        viewModel.isConnectedToInternet.subscribe(onNext: { [weak self] isConnectedToInternet in
-            DispatchQueue.main.async {
-                self?.bannerView.isHidden = isConnectedToInternet
-                self?.view.isHidden = !isConnectedToInternet
-            }
+        viewModel.isConnectedToInternet.observe(on: MainScheduler.instance).subscribe(onNext: { [weak self] isConnectedToInternet in
+            self?.bannerView.isHidden = isConnectedToInternet
+            self?.view.isHidden = !isConnectedToInternet
         }).disposed(by: disposeBag)
     }
     

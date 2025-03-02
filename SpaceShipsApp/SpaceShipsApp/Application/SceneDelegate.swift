@@ -14,7 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
-        //setInitilaCredentials()
+        setInitialCredentials()
         let loginViewModel = LoginViewModel(networkConnectionManager: NetworkConnectionManager())
         let loginViewController = LoginViewController(viewModel: loginViewModel)
         let navigationController = UINavigationController(rootViewController: loginViewController)
@@ -61,3 +61,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 }
 
+extension UIView {
+    func addSubviews(_ subviews: [UIView]) {
+        subviews.forEach { [weak self] in
+            self?.addSubview($0)
+        }
+    }
+}

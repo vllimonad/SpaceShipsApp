@@ -68,18 +68,16 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
     }
     
     private func setupBindings() {
-        viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageNSData in
-            if let shipImageNSData = shipImageNSData {
-                let shipImageData = Data(referencing: shipImageNSData)
+        viewModel.shipImageData.subscribe(onNext: { [weak self] shipImageData in
+            if let shipImageData = shipImageData {
                 self?.shipImageView.image = UIImage(data: shipImageData)
             } else {
                 self?.shipImageView.image = UIImage(named: "ImageAbsence")
             }
         }).disposed(by: disposeBag)
         
-        viewModel.shipDetailsValues.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { [weak self] row, value, cell in
-            guard let fieldName = self?.viewModel.shipDetailsNames[row] else { return }
-            cell.setLabels(with: fieldName, and: value)
+        viewModel.shipDetailsRows.bind(to: tableView.rx.items(cellIdentifier: ShipDetailsTableViewCell.identifier, cellType: ShipDetailsTableViewCell.self)) { _, value, cell in
+            cell.setLabels(with: value)
         }.disposed(by: disposeBag)
         
         viewModel.isConnectedToInternet.bind(to: bannerView.rx.isHidden).disposed(by: disposeBag)
@@ -92,8 +90,7 @@ final class ShipDetailsViewController: UIViewController, UITableViewDelegate {
         
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        contentView.addSubview(shipImageView)
-        contentView.addSubview(tableView)
+        contentView.addSubviews([shipImageView, tableView])
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
